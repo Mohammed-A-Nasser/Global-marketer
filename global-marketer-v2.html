@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Marketer v2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0A1628;--navy2:#0E2040;--teal:#0D7EA8;--accent:#00D4C8;
+  --gold:#F5A623;--bg:#F2F7FC;--white:#fff;--text:#0D1F35;--muted:#6B8BAA;
+  --red:#E63946;--green:#1DB954;--yellow:#F4A261;--border:#D0E4F0;--purple:#6C5CE7;
+}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff}
+.loading-logo{width:80px;height:80px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:20px;animation:la 1s ease infinite alternate}
+@keyframes la{from{transform:scale(1);box-shadow:0 8px 24px rgba(0,212,200,0.3)}to{transform:scale(1.05);box-shadow:0 12px 32px rgba(0,212,200,0.5)}}
+.loading-title{font-family:'Tajawal',sans-serif;font-size:1.4rem;font-weight:900;margin-bottom:6px}
+.loading-sub{font-size:0.75rem;color:var(--accent);margin-bottom:24px}
+.loading-bar{width:200px;height:4px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden}
+.loading-progress{height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:4px;animation:lp 2s ease forwards}
+@keyframes lp{from{width:0}to{width:100%}}
+
+/* LOGIN */
+.login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:linear-gradient(135deg,var(--navy),var(--navy2),#0D4A6B)}
+.login-box{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:36px 28px;width:100%;max-width:400px;text-align:center}
+.login-logo{width:70px;height:70px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;box-shadow:0 8px 24px rgba(0,212,200,0.3)}
+.login-title{font-family:'Tajawal',sans-serif;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:4px}
+.login-sub{font-size:0.75rem;color:var(--accent);font-weight:600;letter-spacing:1px;margin-bottom:28px}
+.login-input{width:100%;padding:13px 16px;border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;font-family:'Cairo',sans-serif;font-size:0.88rem;color:#fff;background:rgba(255,255,255,0.08);outline:none;margin-bottom:12px;transition:all 0.2s}
+.login-input:focus{border-color:var(--accent);background:rgba(255,255,255,0.12)}
+.login-input::placeholder{color:rgba(255,255,255,0.4)}
+.login-btn{width:100%;padding:13px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;border:none;font-family:'Cairo',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;transition:all 0.2s;margin-top:4px}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,212,200,0.4)}
+.login-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.login-err{background:rgba(230,57,70,0.2);border:1px solid rgba(230,57,70,0.4);color:#FF8C94;border-radius:8px;padding:10px;font-size:0.78rem;margin-top:10px;display:none}
+.login-err.show{display:block}
+
+/* HEADER */
+.app-header{background:linear-gradient(135deg,var(--navy),var(--navy2));position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:11px 16px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.brand-text h1{font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:900;color:#fff}
+.brand-text p{font-size:0.6rem;color:var(--accent);font-weight:600;letter-spacing:1px}
+.header-right{display:flex;align-items:center;gap:10px}
+.user-name{font-size:0.75rem;font-weight:700;color:#fff}
+.user-role-lbl{font-size:0.6rem;color:var(--accent);font-weight:600}
+.logout-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:7px 12px;border-radius:8px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:0.72rem;font-weight:700}
+.logout-btn:hover{background:rgba(230,57,70,0.3)}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
+.sync-dot.syncing{background:var(--yellow);animation:pulse 1s infinite}
+.sync-dot.offline{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* NAV */
+.nav-bar{display:flex;background:var(--white);border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.nav-bar::-webkit-scrollbar{display:none}
+.nav-btn{padding:11px 14px;font-family:'Cairo',sans-serif;font-size:0.76rem;font-weight:700;color:var(--muted);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+.nav-btn.active{color:var(--teal);border-bottom-color:var(--accent)}
+.nav-btn:hover{color:var(--teal);background:var(--bg)}
+
+/* PAGES */
+.page{display:none;padding:14px;max-width:900px;margin:0 auto;animation:fi 0.2s ease}
+.page.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:var(--white);border-radius:14px;padding:16px;margin-bottom:13px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(10,22,40,0.05)}
+.card-hd{font-size:0.86rem;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.ico-b{background:#E8F4FD;color:var(--teal)}.ico-g{background:#E6F9EC;color:var(--green)}
+.ico-gold{background:#FFF4E0;color:var(--gold)}.ico-r{background:#FFEBEC;color:var(--red)}
+.ico-p{background:#F0EEFF;color:var(--purple)}
+
+/* FORMS */
+input,select,textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'Cairo',sans-serif;font-size:0.8rem;color:var(--text);background:#FAFCFF;outline:none;margin-bottom:8px;transition:all 0.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(0,212,200,0.1)}
+label{font-size:0.7rem;font-weight:700;color:var(--muted);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.3px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+textarea{resize:vertical;min-height:60px}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:9px;font-family:'Cairo',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px}
+.btn-p{background:linear-gradient(135deg,var(--teal),#0A5F80);color:#fff;box-shadow:0 4px 12px rgba(13,126,168,0.3)}
+.btn-p:hover{transform:translateY(-1px)}
+.btn-a{background:linear-gradient(135deg,var(--accent),#00A89E);color:#fff}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+.sbox{background:var(--white);border:1px solid var(--border);border-radius:13px;padding:13px 9px;text-align:center;position:relative;overflow:hidden}
+.sbox::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sb-blue::before{background:linear-gradient(90deg,var(--teal),var(--accent))}
+.sb-green::before{background:linear-gradient(90deg,var(--green),#52E88A)}
+.sb-gold::before{background:linear-gradient(90deg,var(--gold),#FFD166)}
+.sb-red::before{background:linear-gradient(90deg,var(--red),#FF8C94)}
+.sb-purple::before{background:linear-gradient(90deg,var(--purple),#A29BFE)}
+.snum{font-size:1.5rem;font-weight:900;line-height:1}
+.slbl{font-size:0.65rem;color:var(--muted);font-weight:700;margin-top:3px}
+.ssub{font-size:0.6rem;color:var(--muted);margin-top:2px}
+
+/* ITEMS */
+.item{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);margin-bottom:6px;background:#FAFCFF;transition:all 0.2s}
+.item:hover{border-color:var(--accent)}
+.del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:4px;border-radius:5px;transition:all 0.2s;flex-shrink:0}
+.del-btn:hover{color:var(--red);background:#FFEBEC}
+.badge{padding:2px 8px;border-radius:20px;font-size:0.65rem;font-weight:700}
+.b-high{background:#FFEBEC;color:var(--red)}.b-med{background:#FFF4E6;color:var(--yellow)}.b-low{background:#E6F9EC;color:var(--green)}
+.b-active{background:#E6F9EC;color:var(--green)}.b-pending{background:#FFF4E6;color:var(--yellow)}
+.b-ended{background:#F0F0F0;color:#888}.b-seasonal{background:#F0EEFF;color:var(--purple)}
+.b-blue{background:#E6F0FF;color:var(--teal)}
+
+/* PROGRESS */
+.prog-wrap{margin-bottom:12px}
+.prog-hd{display:flex;justify-content:space-between;font-size:0.78rem;font-weight:700;margin-bottom:4px}
+.prog-bar{background:var(--border);border-radius:5px;height:7px;overflow:hidden}
+.prog-fill{height:100%;border-radius:5px;transition:width 0.6s ease}
+.pf-b{background:linear-gradient(90deg,var(--teal),var(--accent))}
+.pf-g{background:linear-gradient(90deg,var(--green),#52E88A)}
+.pf-gold{background:linear-gradient(90deg,var(--gold),#FFD166)}
+.pf-r{background:linear-gradient(90deg,var(--red),#FF8C94)}
+
+/* FILTERS */
+.filter-row{display:flex;gap:6px;margin-bottom:11px;flex-wrap:wrap}
+.fbtn{padding:4px 11px;border-radius:20px;font-family:'Cairo',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:all 0.2s}
+.fbtn.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+.sec-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.sec-title{font-size:0.9rem;font-weight:900;color:var(--navy)}
+.sec-sub{font-size:0.7rem;color:var(--muted)}
+.empty{text-align:center;padding:30px 16px;color:var(--muted)}
+.empty-ico{font-size:2.4rem;margin-bottom:8px}
+.empty p{font-size:0.78rem}
+.notif{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 22px;border-radius:12px;font-size:0.8rem;font-weight:700;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.notif.show{opacity:1}
+
+/* VISIT CARDS */
+.visit-card{border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px;background:#FAFCFF;position:relative;transition:all 0.2s}
+.visit-card:hover{border-color:var(--accent);box-shadow:0 3px 12px rgba(0,212,200,0.1)}
+.vc-name{font-weight:700;font-size:0.88rem;color:var(--navy)}
+.vc-title{font-size:0.82rem;font-weight:600;color:var(--teal);margin-top:2px}
+.vc-meta{font-size:0.7rem;color:var(--muted);margin-top:3px;line-height:1.8}
+.vc-status{position:absolute;top:12px;left:12px;padding:2px 8px;border-radius:20px;font-size:0.65rem;font-weight:700}
+.vs-done{background:#E6F9EC;color:var(--green)}
+.vs-plan{background:#E6F0FF;color:var(--teal)}
+.vs-cancel{background:#FFEBEC;color:var(--red)}
+
+/* CONTRACT CARDS */
+.con-card{border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px;background:#FAFCFF;position:relative}
+.pay-chip{padding:4px 9px;border-radius:7px;font-size:0.65rem;font-weight:700;cursor:pointer;transition:all 0.2s;border:1.5px solid transparent;margin:2px;display:inline-block}
+.pay-chip.paid{background:#E6F9EC;color:var(--green);border-color:#B8F0C8}
+.pay-chip.pending{background:#FFF4E6;color:var(--yellow);border-color:#FFE0B2}
+.pay-chip:hover{transform:scale(1.05)}
+
+/* FINANCE */
+.bal-card{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:14px;padding:16px;margin-bottom:13px;color:#fff}
+.bal-row{display:flex;gap:9px}
+.bal-item{flex:1;text-align:center;padding:10px;border-radius:10px;background:rgba(255,255,255,0.07)}
+.bal-num{font-size:1rem;font-weight:900}
+.bal-lbl{font-size:0.62rem;color:rgba(255,255,255,0.6);font-weight:600;margin-top:2px}
+
+/* CONTRACT FINANCE SUMMARY */
+.con-fin-card{background:linear-gradient(135deg,#0E2040,#1a3a5c);border-radius:12px;padding:14px;margin-bottom:10px;color:#fff;border:1px solid rgba(255,255,255,0.1)}
+.con-fin-name{font-weight:700;font-size:0.88rem;color:#fff;margin-bottom:8px}
+.con-fin-row{display:flex;gap:8px;margin-bottom:6px}
+.con-fin-item{flex:1;text-align:center;padding:8px;background:rgba(255,255,255,0.07);border-radius:8px}
+.con-fin-num{font-size:0.9rem;font-weight:900}
+.con-fin-lbl{font-size:0.6rem;color:rgba(255,255,255,0.6);margin-top:2px}
+
+/* CHARTS */
+.chart-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.chart-lbl{font-size:0.7rem;font-weight:700;color:var(--muted);width:90px;text-align:right;flex-shrink:0}
+.chart-track{flex:1;background:var(--border);border-radius:4px;height:9px;overflow:hidden}
+.chart-fill{height:100%;border-radius:4px;transition:width 0.8s ease}
+.chart-val{font-size:0.7rem;font-weight:700;width:65px;flex-shrink:0}
+
+/* MAP CHART */
+.gov-map{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.gov-item{padding:8px;border-radius:8px;text-align:center;background:var(--bg);border:1px solid var(--border);transition:all 0.2s}
+.gov-item:hover{border-color:var(--accent)}
+.gov-num{font-size:1.1rem;font-weight:900;color:var(--teal)}
+.gov-name{font-size:0.62rem;color:var(--muted);font-weight:600;margin-top:2px}
+
+/* ALERTS */
+.alert-item{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:10px;margin-bottom:7px;font-size:0.78rem;font-weight:600}
+.alert-warn{background:#FFF4E6;border:1px solid #FFE0B2;color:#B86A00}
+.alert-danger{background:#FFEBEC;border:1px solid #FFB3BA;color:#C0001A}
+.alert-info{background:#E6F0FF;border:1px solid #B3D4FF;color:#004A9E}
+
+/* AI */
+.ai-wrap{background:linear-gradient(135deg,#0A1628,#0E2040);border-radius:16px;padding:18px;margin-bottom:14px}
+.ai-title{color:#fff;font-weight:900;font-size:0.9rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ai-msgs{max-height:320px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:9px}
+.ai-msg-user{background:var(--teal);color:#fff;border-radius:12px 12px 4px 12px;padding:10px 14px;font-size:0.8rem;align-self:flex-end;max-width:85%}
+.ai-msg-bot{background:rgba(255,255,255,0.1);color:#fff;border-radius:12px 12px 12px 4px;padding:10px 14px;font-size:0.8rem;align-self:flex-start;max-width:90%;line-height:1.6}
+.ai-input-row{display:flex;gap:8px}
+.ai-input{flex:1;padding:10px 14px;border-radius:10px;border:none;font-family:'Cairo',sans-serif;font-size:0.8rem;background:rgba(255,255,255,0.12);color:#fff;outline:none}
+.ai-input::placeholder{color:rgba(255,255,255,0.4)}
+.ai-input:focus{background:rgba(255,255,255,0.18)}
+.ai-send{padding:10px 16px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;border:none;cursor:pointer;font-size:1rem;font-weight:700}
+.ai-send:disabled{opacity:0.5;cursor:not-allowed}
+.ai-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.ai-chip{padding:5px 11px;border-radius:20px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);font-size:0.7rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.15);transition:all 0.2s;font-family:'Cairo',sans-serif}
+.ai-chip:hover{background:rgba(0,212,200,0.2);border-color:var(--accent);color:#fff}
+.typing{display:flex;gap:4px;padding:8px 12px;align-items:center}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.2s}.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* USERS */
+.user-card{border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px;background:#FAFCFF;display:flex;align-items:center;gap:12px}
+.user-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;flex-shrink:0}
+
+/* MONTHLY REPORT */
+.mr-card{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:9px;background:#FAFCFF}
+.mr-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.mr-title{font-weight:700;font-size:0.88rem;color:var(--navy)}
+
+/* CONVERSION CARD */
+.conv-stat{background:linear-gradient(135deg,var(--purple),#4A3F8C);border-radius:12px;padding:14px;color:#fff;margin-bottom:10px}
+.conv-num{font-size:2rem;font-weight:900;color:#A29BFE}
+.conv-lbl{font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:2px}
+
+@media(max-width:500px){.stats-row{grid-template-columns:1fr 1fr}.row3{grid-template-columns:1fr 1fr}.gov-map{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loading">
+  <div class="loading-logo">🌐</div>
+  <div class="loading-title">Global Marketer</div>
+  <div class="loading-sub">Medical Management & Marketing</div>
+  <div class="loading-bar"><div class="loading-progress"></div></div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-page" id="login-page" style="display:none">
+  <div class="login-box">
+    <div class="login-logo">🌐</div>
+    <div class="login-title">Global Marketer</div>
+    <div class="login-sub">MEDICAL MANAGEMENT & MARKETING</div>
+    <input class="login-input" type="email" id="login-email" placeholder="البريد الإلكتروني">
+    <input class="login-input" type="password" id="login-pass" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" id="login-btn" onclick="doLogin()">🔐 تسجيل الدخول</button>
+    <div class="login-err" id="login-err"></div>
+    <div style="margin-top:16px;font-size:0.68rem;color:rgba(255,255,255,0.4)">للدخول تواصل مع المدير</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-logo">🌐</div>
+        <div class="brand-text"><h1>Global Marketer</h1><p>MEDICAL MANAGEMENT</p></div>
+      </div>
+      <div class="header-right">
+        <div class="sync-dot" id="sync-dot"></div>
+        <div style="text-align:right">
+          <div class="user-name" id="user-display-name">—</div>
+          <div class="user-role-lbl" id="user-display-role">—</div>
+        </div>
+        <button class="logout-btn" onclick="doLogout()">خروج</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav-bar">
+    <button class="nav-btn active" onclick="goTo('dashboard',this)">🏠 الرئيسية</button>
+    <button class="nav-btn" onclick="goTo('clients',this)">👥 العملاء</button>
+    <button class="nav-btn" onclick="goTo('visits',this)">🏥 الزيارات</button>
+    <button class="nav-btn" onclick="goTo('tasks',this)">📋 المهام</button>
+    <button class="nav-btn" onclick="goTo('contracts',this)">📄 العقود</button>
+    <button class="nav-btn" onclick="goTo('finance',this)">💰 المالية</button>
+    <button class="nav-btn" onclick="goTo('monthly',this)">📝 التقارير</button>
+    <button class="nav-btn" onclick="goTo('analytics',this)">📊 تحليلات</button>
+    <button class="nav-btn" onclick="goTo('ai',this)">🤖 مساعد ذكي</button>
+    <button class="nav-btn" id="nav-users" style="display:none" onclick="goTo('users',this)">👤 المستخدمين</button>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="dashboard">
+    <div class="stats-row" id="d-stats"></div>
+    <div id="d-alerts"></div>
+    <div class="row" style="align-items:start">
+      <div>
+        <div class="card"><div class="card-hd"><div class="ico ico-b">📋</div>مهام عاجلة</div><div id="d-tasks"></div></div>
+        <div class="card"><div class="card-hd"><div class="ico ico-gold">⚠️</div>تنبيهات مهمة</div><div id="d-alerts2"></div></div>
+      </div>
+      <div>
+        <div class="card"><div class="card-hd"><div class="ico ico-g">🏥</div>أحدث الزيارات</div><div id="d-visits"></div></div>
+        <div class="card"><div class="card-hd"><div class="ico ico-p">💰</div>آخر الحركات</div><div id="d-fin"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTS -->
+  <div class="page" id="clients">
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-b">👤</div>إضافة عميل</div>
+      <div class="row"><div><label>الاسم</label><input id="cl-n" placeholder="د. أحمد / مستشفى النيل..."></div><div><label>النوع</label><select id="cl-t"><option>طبيب</option><option>مستشفى</option><option>مختبر</option><option>صيدلية</option><option>عيادة</option><option>شركة</option></select></div></div>
+      <div class="row"><div><label>الهاتف</label><input id="cl-ph" type="tel" placeholder="01xxxxxxxxx"></div><div><label>التخصص الطبي</label><select id="cl-spec"><option>عام</option><option>باطنة</option><option>جراحة</option><option>نساء وتوليد</option><option>أطفال</option><option>عظام</option><option>عيون</option><option>أنف وأذن وحنجرة</option><option>قلب</option><option>أمراض جلدية</option><option>مختبرات</option><option>أشعة</option><option>أسنان</option><option>نفسية وعصبية</option><option>أخرى</option></select></div></div>
+      <div class="row"><div><label>المحافظة</label><select id="cl-gov"><option>شمال سيناء</option><option>جنوب سيناء</option><option>الإسماعيلية</option><option>بورسعيد</option><option>السويس</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option><option>الغربية</option><option>المنوفية</option><option>القليوبية</option><option>الشرقية</option><option>كفر الشيخ</option><option>البحيرة</option><option>دمياط</option><option>المنيا</option><option>بني سويف</option><option>الفيوم</option><option>أسيوط</option><option>سوهاج</option><option>قنا</option><option>الأقصر</option><option>أسوان</option><option>البحر الأحمر</option><option>مطروح</option><option>الوادي الجديد</option><option>أخرى</option></select></div><div><label>المدينة / المنطقة</label><input id="cl-ar" placeholder="العريش، الشيخ زايد..."></div></div>
+      <label>ملاحظات</label><textarea id="cl-no" placeholder="احتياجات، ملاحظات..."></textarea>
+      <button class="btn btn-p" onclick="addClient()">➕ إضافة</button>
+    </div>
+    <div class="sec-hd"><div class="sec-title">العملاء</div><div class="sec-sub" id="cl-sum"></div></div>
+    <div class="filter-row">
+      <button class="fbtn on" onclick="fClients('all',this)">الكل</button>
+      <button class="fbtn" onclick="fClients('طبيب',this)">👨‍⚕️ طبيب</button>
+      <button class="fbtn" onclick="fClients('مستشفى',this)">🏥 مستشفى</button>
+      <button class="fbtn" onclick="fClients('مختبر',this)">🔬 مختبر</button>
+      <button class="fbtn" onclick="fClients('عيادة',this)">🏨 عيادة</button>
+    </div>
+    <div id="cl-list"></div>
+  </div>
+
+  <!-- VISITS -->
+  <div class="page" id="visits">
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr)" id="v-stats-row"></div>
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-b">🏥</div>تسجيل زيارة</div>
+      <div class="row"><div><label>العميل</label><select id="v-cl"></select></div><div><label>نوع الزيارة</label><select id="v-type"><option>زيارة ميدانية</option><option>اجتماع</option><option>تقديم عرض</option><option>متابعة</option><option>تحصيل</option><option>تدريب</option><option>عرض منتج</option></select></div></div>
+      <div class="row"><div><label>اسم / عنوان الزيارة</label><input id="v-title" placeholder="زيارة متابعة عقد / عرض منتج جديد..."></div><div><label>التخصص الطبي</label><select id="v-spec"><option>عام</option><option>باطنة</option><option>جراحة</option><option>نساء وتوليد</option><option>أطفال</option><option>عظام</option><option>عيون</option><option>أنف وأذن وحنجرة</option><option>قلب</option><option>أمراض جلدية</option><option>مختبرات</option><option>أشعة</option><option>أسنان</option><option>نفسية وعصبية</option><option>أخرى</option></select></div></div>
+      <div class="row"><div><label>التاريخ</label><input type="date" id="v-date"></div><div><label>الحالة</label><select id="v-stat"><option value="done">✅ تمت</option><option value="planned">📅 مخططة</option><option value="cancelled">❌ ملغاة</option></select></div></div>
+      <div class="row"><div><label>المحافظة</label><select id="v-gov"><option>شمال سيناء</option><option>جنوب سيناء</option><option>الإسماعيلية</option><option>بورسعيد</option><option>السويس</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option><option>الغربية</option><option>المنوفية</option><option>القليوبية</option><option>الشرقية</option><option>كفر الشيخ</option><option>البحيرة</option><option>دمياط</option><option>المنيا</option><option>بني سويف</option><option>الفيوم</option><option>أسيوط</option><option>سوهاج</option><option>قنا</option><option>الأقصر</option><option>أسوان</option><option>البحر الأحمر</option><option>مطروح</option><option>الوادي الجديد</option><option>أخرى</option></select></div><div><label>المدينة / المنطقة</label><input id="v-area" placeholder="العريش، الشيخ زايد..."></div></div>
+      <div class="row"><div><label>المدة (دقيقة)</label><input type="number" id="v-dur" placeholder="30"></div><div><label>ربط بعقد</label><select id="v-con"></select></div></div>
+      <label>نتيجة الزيارة</label><textarea id="v-result" placeholder="ما تم إنجازه، ردود الفعل..."></textarea>
+      <label>الخطوة التالية</label><input id="v-next" placeholder="الإجراء المطلوب...">
+      <button class="btn btn-p" onclick="addVisit()">➕ تسجيل</button>
+    </div>
+    <div class="sec-hd"><div class="sec-title">سجل الزيارات</div><div class="sec-sub" id="v-sum"></div></div>
+    <div class="filter-row">
+      <button class="fbtn on" onclick="fVisits('all',this)">الكل</button>
+      <button class="fbtn" onclick="fVisits('done',this)">✅ تمت</button>
+      <button class="fbtn" onclick="fVisits('planned',this)">📅 مخططة</button>
+      <button class="fbtn" onclick="fVisits('cancelled',this)">❌ ملغاة</button>
+    </div>
+    <div id="v-list"></div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-hd"><div class="ico ico-b">📊</div>إحصائيات الزيارات</div>
+      <div id="v-analytics"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-b">🗺️</div>توزيع الزيارات على المحافظات</div>
+      <div id="v-map"></div>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="page" id="tasks">
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-b">➕</div>إضافة مهمة</div>
+      <input id="t-n" placeholder="وصف المهمة...">
+      <div class="row"><div><label>الأولوية</label><select id="t-p"><option value="high">🔴 عالية</option><option value="med" selected>🟡 متوسطة</option><option value="low">🟢 منخفضة</option></select></div><div><label>الموعد</label><input type="date" id="t-d"></div></div>
+      <div class="row"><div><label>ربط بعميل</label><select id="t-cl"></select></div><div><label>التصنيف</label><select id="t-cat"><option>تسويق</option><option>إدارة</option><option>متابعة</option><option>اجتماع</option><option>تقرير</option><option>أخرى</option></select></div></div>
+      <button class="btn btn-p" onclick="addTask()">➕ إضافة</button>
+    </div>
+    <div class="sec-hd"><div class="sec-title">المهام</div><div class="sec-sub" id="t-sum"></div></div>
+    <div class="filter-row">
+      <button class="fbtn on" onclick="fTasks('all',this)">الكل</button>
+      <button class="fbtn" onclick="fTasks('pending',this)">⏳ معلقة</button>
+      <button class="fbtn" onclick="fTasks('done',this)">✅ مكتملة</button>
+      <button class="fbtn" onclick="fTasks('high',this)">🔴 عاجلة</button>
+    </div>
+    <div id="t-list"></div>
+  </div>
+
+  <!-- CONTRACTS -->
+  <div class="page" id="contracts">
+    <div class="stats-row" style="grid-template-columns:repeat(4,1fr)" id="con-stats-row"></div>
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-gold">📄</div>إضافة عقد</div>
+      <div class="row"><div><label>العميل</label><select id="con-cl"></select></div><div><label>نوع الخدمة</label><select id="con-srv"><option>تسويق طبي</option><option>استشارات مختبرات</option><option>إدارة مختبر</option><option>تدريب طاقم</option><option>خدمات تحليلية</option><option>استشارات إدارية</option><option>أخرى</option></select></div></div>
+      <div class="row"><div><label>القيمة الإجمالية (جنيه)</label><input type="number" id="con-val" placeholder="0"></div><div><label>الحالة</label><select id="con-stat"><option value="active">✅ نشط</option><option value="seasonal">🌙 موسمي</option><option value="pending">⏳ معلق</option><option value="ended">🔴 منتهي</option></select></div></div>
+      <div class="row"><div><label>البداية</label><input type="date" id="con-s"></div><div><label>النهاية</label><input type="date" id="con-e"></div></div>
+      <div class="row"><div><label>طريقة الدفع</label><select id="con-pt"><option value="monthly">شهري</option><option value="quarterly">ربع سنوي</option><option value="once">دفعة واحدة</option></select></div><div><label>عدد الدفعات</label><input type="number" id="con-inst" value="1" min="1"></div></div>
+      <label>ملاحظات</label><textarea id="con-no" placeholder="تفاصيل..."></textarea>
+      <button class="btn btn-p" onclick="addContract()">➕ حفظ</button>
+    </div>
+    <div class="sec-hd"><div class="sec-title">العقود</div><div class="sec-sub" id="con-sum"></div></div>
+    <div id="con-list"></div>
+  </div>
+
+  <!-- FINANCE -->
+  <div class="page" id="finance">
+    <div class="bal-card">
+      <div class="bal-row">
+        <div class="bal-item"><div class="bal-num" style="color:#1DB954" id="b-in">0</div><div class="bal-lbl">💚 الدخل</div></div>
+        <div class="bal-item"><div class="bal-num" style="color:#FF6B7A" id="b-ex">0</div><div class="bal-lbl">🔴 المصاريف</div></div>
+        <div class="bal-item"><div class="bal-num" style="color:var(--accent)" id="b-net">0</div><div class="bal-lbl">💰 الصافي</div></div>
+      </div>
+    </div>
+    <!-- CONTRACT FINANCE SUMMARY -->
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-gold">📄</div>ملخص العقود المالي</div>
+      <div id="con-fin-summary"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-g">➕</div>إضافة حركة مالية</div>
+      <div class="row"><div><label>النوع</label><select id="f-type"><option value="income">💚 دخل / إيراد</option><option value="expense">🔴 مصروف</option></select></div><div><label>المبلغ (جنيه)</label><input type="number" id="f-amt" placeholder="0"></div></div>
+      <div class="row"><div><label>التصنيف</label><select id="f-cat"><option>راتب</option><option>عمولة</option><option>دفعة عقد</option><option>إيجار</option><option>مواصلات</option><option>تسويق وإعلان</option><option>مستلزمات</option><option>رواتب موظفين</option><option>أخرى</option></select></div><div><label>التاريخ</label><input type="date" id="f-date"></div></div>
+      <div class="row"><div><label>ربط بعميل</label><select id="f-cl"></select></div><div><label>ربط بعقد</label><select id="f-con"></select></div></div>
+      <label>ملاحظة</label><input id="f-note" placeholder="وصف مختصر...">
+      <button class="btn btn-p" onclick="addFinance()">➕ إضافة</button>
+    </div>
+    <div class="filter-row">
+      <button class="fbtn on" onclick="fFin('all',this)">الكل</button>
+      <button class="fbtn" onclick="fFin('income',this)">💚 دخل</button>
+      <button class="fbtn" onclick="fFin('expense',this)">🔴 مصروف</button>
+    </div>
+    <div id="fin-list"></div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-hd"><div class="ico ico-g">📊</div>إحصائيات مالية</div>
+      <div id="fin-analytics"></div>
+    </div>
+  </div>
+
+  <!-- MONTHLY REPORTS -->
+  <div class="page" id="monthly">
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-p">📝</div>تقرير شهري جديد</div>
+      <div class="row"><div><label>العميل / الجهة</label><select id="mr-cl"></select></div><div><label>الشهر</label><input type="month" id="mr-month"></div></div>
+      <label>الإيجابيات والإنجازات</label><textarea id="mr-pos" placeholder="ما تم إنجازه بنجاح..."></textarea>
+      <label>السلبيات والتحديات</label><textarea id="mr-neg" placeholder="المشاكل والعقبات..."></textarea>
+      <label>الفرص والاقتراحات</label><textarea id="mr-opp" placeholder="فرص للتحسين..."></textarea>
+      <label>أهداف الشهر القادم</label><textarea id="mr-goals" placeholder="الخطة والأهداف..."></textarea>
+      <div class="row"><div><label>التقييم (1-10)</label><input type="number" id="mr-score" min="1" max="10" placeholder="7"></div><div><label>ملاحظات إضافية</label><input id="mr-notes" placeholder="..."></div></div>
+      <button class="btn btn-p" onclick="addMonthlyReport()">💾 حفظ</button>
+    </div>
+    <div class="sec-hd"><div class="sec-title">التقارير الشهرية</div><div class="sec-sub" id="mr-sum"></div></div>
+    <div id="mr-list"></div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="page" id="analytics">
+    <div class="stats-row" id="ana-stats"></div>
+    <!-- CONVERSION RATE -->
+    <div class="row" style="align-items:start;margin-bottom:14px">
+      <div class="conv-stat">
+        <div class="conv-num" id="conv-rate">0%</div>
+        <div class="conv-lbl">نسبة تحويل الزيارات لعقود</div>
+      </div>
+      <div class="conv-stat" style="background:linear-gradient(135deg,#1a5c3a,#0D7EA8)">
+        <div class="conv-num" style="color:#52E88A" id="avg-visit-time">0</div>
+        <div class="conv-lbl">متوسط مدة الزيارة (دقيقة)</div>
+      </div>
+    </div>
+    <div class="row" style="align-items:start">
+      <div>
+        <div class="card"><div class="card-hd"><div class="ico ico-b">👥</div>توزيع العملاء</div><div id="ana-cl"></div></div>
+        <div class="card"><div class="card-hd"><div class="ico ico-b">🗺️</div>الزيارات بالمحافظات</div><div id="ana-gov"></div></div>
+        <div class="card"><div class="card-hd"><div class="ico ico-b">📋</div>أداء المهام</div><div id="ana-t"></div></div>
+      </div>
+      <div>
+        <div class="card"><div class="card-hd"><div class="ico ico-g">💰</div>التوزيع المالي</div><div id="ana-f"></div></div>
+        <div class="card"><div class="card-hd"><div class="ico ico-gold">📄</div>أداء العقود</div><div id="ana-con"></div></div>
+        <div class="card"><div class="card-hd"><div class="ico ico-p">🏆</div>أفضل العملاء</div><div id="ana-top"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-b">🎯</div>أهداف شهرية</div>
+      <div class="row3">
+        <div><label>هدف الزيارات</label><input type="number" id="goal-v" placeholder="20"></div>
+        <div><label>هدف الإيرادات (ج)</label><input type="number" id="goal-i" placeholder="10000"></div>
+        <div><label>هدف العقود</label><input type="number" id="goal-c" placeholder="3"></div>
+      </div>
+      <button class="btn btn-a" onclick="saveGoals()">💾 حفظ الأهداف</button>
+      <div id="goals-progress" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-b">📝</div>ملاحظات الأسبوع</div>
+      <textarea id="weekly-notes" placeholder="أهداف وملاحظات..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-a" onclick="saveNotes()">💾 حفظ</button>
+        <button class="btn btn-p" onclick="exportReport()">📤 تصدير التقرير</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI -->
+  <div class="page" id="ai">
+    <div class="ai-wrap">
+      <div class="ai-title">🤖 المساعد الذكي — Global Marketer AI</div>
+      <div class="ai-chips">
+        <button class="ai-chip" onclick="askAI('من هو أفضل عميل؟')">🏆 أفضل عميل</button>
+        <button class="ai-chip" onclick="askAI('من لم يتم زيارته منذ 30 يوم؟')">⚠️ بدون زيارة</button>
+        <button class="ai-chip" onclick="askAI('ما هي الدفعات المتأخرة؟')">💸 دفعات متأخرة</button>
+        <button class="ai-chip" onclick="askAI('حلل أداء الشهر الحالي وقدم توصيات')">📊 تحليل الأداء</button>
+        <button class="ai-chip" onclick="askAI('ما هي أولويات الأسبوع القادم؟')">🎯 الأولويات</button>
+        <button class="ai-chip" onclick="askAI('قارن الزيارات بالعقود المحصّلة')">📈 نسبة التحويل</button>
+      </div>
+      <div class="ai-msgs" id="ai-msgs">
+        <div class="ai-msg-bot">مرحباً! أنا مساعدك الذكي في Global Marketer 🌐<br>أستطيع تحليل بياناتك وتقديم رؤى مفيدة. اسألني!</div>
+      </div>
+      <div class="ai-input-row">
+        <input class="ai-input" id="ai-input" placeholder="اسأل عن بياناتك..." onkeydown="if(event.key==='Enter')sendAI()">
+        <button class="ai-send" id="ai-send-btn" onclick="sendAI()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- USERS -->
+  <div class="page" id="users">
+    <div class="card">
+      <div class="card-hd"><div class="ico ico-b">👤</div>إضافة مستخدم</div>
+      <div class="row"><div><label>الإيميل</label><input type="email" id="nu-email" placeholder="user@example.com"></div><div><label>كلمة المرور</label><input type="password" id="nu-pass" placeholder="8 أحرف على الأقل"></div></div>
+      <div class="row"><div><label>الاسم</label><input id="nu-name" placeholder="اسم المستخدم"></div><div><label>الصلاحية</label>
+        <select id="nu-role">
+          <option value="staff">👷 موظف — يسجل زيارات وعقود</option>
+          <option value="viewer">👁️ مشاهد — يشوف بس</option>
+          <option value="admin">👑 مدير — صلاحيات كاملة</option>
+        </select>
+      </div></div>
+      <button class="btn btn-p" onclick="addUser()">➕ إضافة مستخدم</button>
+    </div>
+    <div class="sec-hd"><div class="sec-title">المستخدمين</div></div>
+    <div id="users-list"></div>
+    <div class="card" style="background:#FFF4E6;border-color:#FFE0B2;margin-top:14px">
+      <div class="card-hd"><div class="ico" style="background:#FFF4E6;color:var(--yellow)">ℹ️</div>الصلاحيات</div>
+      <div style="font-size:0.78rem;line-height:2.2">
+        <div>👑 <strong>مدير</strong> — كل الصلاحيات + إضافة مستخدمين + حذف</div>
+        <div>👷 <strong>موظف</strong> — يضيف زيارات، مهام، عقود، مالية — لا يحذف</div>
+        <div>👁️ <strong>مشاهد</strong> — يشوف البيانات بس بدون أي تعديل</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAKjNF5qucgmbr1wJYNbNnvjkYAwjR0BCs",
+  authDomain: "global-marketer.firebaseapp.com",
+  projectId: "global-marketer",
+  storageBucket: "global-marketer.firebasestorage.app",
+  messagingSenderId: "945289644852",
+  appId: "1:945289644852:web:807cf6377a93abcc873361"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// STATE
+let currentUser=null, currentRole=null, currentUserName='';
+let clients=[], visits=[], tasks=[], contracts=[], finances=[], monthlyReports=[];
+let aiHistory=[];
+let clF='all', vF='all', tF='all', fF='all';
+let unsubscribers=[];
+
+const today=new Date();
+const todayStr=today.toISOString().split('T')[0];
+const curMonth=today.toISOString().slice(0,7);
+
+// UTILS
+function notify(msg){const n=document.getElementById('notif');n.textContent=msg;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2500);}
+function fmt(n){return Math.round(n).toLocaleString('ar-EG')+' ج';}
+function pct(a,b){return b?Math.round(a/b*100):0;}
+function cName(id){const c=clients.find(c=>c.id==id);return c?c.name:'';}
+function tIcon(t){return{طبيب:'👨‍⚕️',مستشفى:'🏥',مختبر:'🔬',صيدلية:'💊',عيادة:'🏨',شركة:'🏢'}[t]||'👤';}
+function setSyncStatus(s){
+  const d=document.getElementById('sync-dot');if(!d)return;
+  d.className='sync-dot';
+  if(s==='syncing')d.classList.add('syncing');
+  else if(s==='offline')d.classList.add('offline');
+}
+function canWrite(){return currentRole==='admin'||currentRole==='staff';}
+function canDelete(){return currentRole==='admin';}
+
+// DATE DEFAULTS
+function setDates(){
+  ['t-d','v-date','f-date','con-s','con-e'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=todayStr;});
+  ['mr-month'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=curMonth;});
+}
+
+// AUTH
+window.doLogin=async function(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const btn=document.getElementById('login-btn');
+  const err=document.getElementById('login-err');
+  if(!email||!pass){err.textContent='⚠️ أدخل الإيميل وكلمة المرور';err.classList.add('show');return;}
+  btn.disabled=true;err.classList.remove('show');
+  try{await signInWithEmailAndPassword(auth,email,pass);}
+  catch(e){
+    const msgs={'auth/user-not-found':'المستخدم غير موجود','auth/wrong-password':'كلمة المرور غلط','auth/invalid-credential':'بيانات الدخول غير صحيحة','auth/too-many-requests':'محاولات كثيرة، انتظر قليلاً'};
+    err.textContent='❌ '+(msgs[e.code]||'خطأ في تسجيل الدخول');
+    err.classList.add('show');btn.disabled=false;
+  }
+}
+window.doLogout=async function(){
+  unsubscribers.forEach(u=>u());unsubscribers=[];
+  await signOut(auth);
+}
+
+onAuthStateChanged(auth,async(user)=>{
+  document.getElementById('loading').style.display='none';
+  if(user){
+    currentUser=user;
+    try{
+      const ud=await getDoc(doc(db,'users',user.uid));
+      if(ud.exists()){const d=ud.data();currentRole=d.role||'viewer';currentUserName=d.name||user.email;}
+      else{await setDoc(doc(db,'users',user.uid),{email:user.email,role:'admin',name:'المدير',created:todayStr});currentRole='admin';currentUserName='المدير';}
+    }catch(e){currentRole='admin';currentUserName=user.email;}
+    showApp();
+  }else{
+    currentUser=null;currentRole=null;
+    document.getElementById('login-page').style.display='flex';
+    document.getElementById('main-app').style.display='none';
+  }
+});
+
+function showApp(){
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  document.getElementById('user-display-name').textContent=currentUserName;
+  document.getElementById('user-display-role').textContent=currentRole==='admin'?'👑 مدير':currentRole==='staff'?'👷 موظف':'👁️ مشاهد';
+  if(currentRole==='admin') document.getElementById('nav-users').style.display='block';
+  setupListeners();
+  setDates();
+  renderDash();
+}
+
+// REALTIME
+function setupListeners(){
+  setSyncStatus('syncing');
+  [['clients',d=>clients=d],['visits',d=>visits=d],['tasks',d=>tasks=d],['contracts',d=>contracts=d],['finances',d=>finances=d],['monthlyReports',d=>monthlyReports=d]].forEach(([name,setter])=>{
+    const unsub=onSnapshot(collection(db,name),(snap)=>{
+      setter(snap.docs.map(d=>({id:d.id,...d.data()})));
+      setSyncStatus('online');
+      const active=document.querySelector('.page.active');
+      if(active) refreshPage(active.id);
+      fillSelects();
+    },(err)=>setSyncStatus('offline'));
+    unsubscribers.push(unsub);
+  });
+}
+
+function refreshPage(p){
+  const map={dashboard:renderDash,clients:renderClients,visits:()=>{renderVisits();renderVisitAnalytics();renderVisitMap();renderVStatsRow();},tasks:renderTasks,contracts:()=>{renderContracts();renderConStatsRow();},finance:()=>{renderFinance();updateBal();renderConFinSummary();renderFinAnalytics();},monthly:renderMonthly,analytics:renderAnalytics,users:renderUsers};
+  if(map[p])map[p]();
+}
+
+// NAV
+window.goTo=function(page,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+  el.classList.add('active');
+  fillSelects();
+  refreshPage(page);
+}
+
+// SELECTS
+function fillSelects(){
+  const opts='<option value="">— بدون ربط —</option>'+clients.map(c=>`<option value="${c.id}">${tIcon(c.type)} ${c.name}</option>`).join('');
+  const reqOpts='<option value="">— اختر عميل —</option>'+clients.map(c=>`<option value="${c.id}">${tIcon(c.type)} ${c.name}</option>`).join('');
+  ['t-cl','f-cl','mr-cl','v-cl'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  ['con-cl'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=reqOpts;});
+  const fcon=document.getElementById('f-con');
+  if(fcon) fcon.innerHTML='<option value="">— بدون ربط —</option>'+contracts.map(c=>`<option value="${c.id}">${c.clientName} - ${fmt(c.value)}</option>`).join('');
+  const vcon=document.getElementById('v-con');
+  if(vcon) vcon.innerHTML='<option value="">— بدون ربط —</option>'+contracts.map(c=>`<option value="${c.id}">${c.clientName} - ${c.service}</option>`).join('');
+}
+
+// ALERTS
+function getAlerts(){
+  const alerts=[];
+  const thirtyAgo=new Date();thirtyAgo.setDate(thirtyAgo.getDate()-30);
+  clients.forEach(c=>{
+    const lastV=visits.filter(v=>v.clientId==c.id&&v.status==='done').sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];
+    if(!lastV||(new Date(lastV.date)<thirtyAgo)) alerts.push({type:'warn',msg:`⚠️ ${c.name} لم يتم زيارته منذ أكثر من 30 يوم`});
+  });
+  contracts.forEach(c=>{
+    if(c.end){const dL=Math.round((new Date(c.end)-today)/(1000*60*60*24));if(dL>=0&&dL<=14)alerts.push({type:'danger',msg:`🔴 عقد ${c.clientName} ينتهي خلال ${dL} يوم`});}
+    (c.payments||[]).forEach(p=>{if(p.status==='pending'&&p.date<todayStr)alerts.push({type:'danger',msg:`💸 دفعة متأخرة: ${c.clientName} — ${fmt(p.amount)}`});});
+  });
+  return alerts;
+}
+
+// DASHBOARD
+function renderDash(){
+  const inc=finances.filter(f=>f.type==='income').reduce((a,f)=>a+f.amount,0);
+  const exp=finances.filter(f=>f.type==='expense').reduce((a,f)=>a+f.amount,0);
+  document.getElementById('d-stats').innerHTML=`
+    <div class="sbox sb-blue"><div class="snum" style="color:var(--teal)">${clients.length}</div><div class="slbl">العملاء</div></div>
+    <div class="sbox sb-green"><div class="snum" style="color:var(--green)">${visits.filter(v=>v.status==='done').length}</div><div class="slbl">زيارات</div></div>
+    <div class="sbox sb-gold"><div class="snum" style="color:var(--gold)">${contracts.filter(c=>c.status==='active'||c.status==='seasonal').length}</div><div class="slbl">عقود نشطة</div></div>
+    <div class="sbox sb-purple"><div class="snum" style="color:var(--purple);font-size:0.85rem">${fmt(inc-exp)}</div><div class="slbl">صافي الربح</div></div>`;
+  const alerts=getAlerts();
+  document.getElementById('d-alerts').innerHTML=alerts.slice(0,2).map(a=>`<div class="alert-item alert-${a.type}">${a.msg}</div>`).join('');
+  document.getElementById('d-alerts2').innerHTML=alerts.length?alerts.map(a=>`<div class="alert-item alert-${a.type}">${a.msg}</div>`).join(''):`<div style="font-size:0.78rem;color:var(--green);padding:10px">✅ لا توجد تنبيهات عاجلة</div>`;
+  const urgentTasks=tasks.filter(t=>!t.done&&t.priority==='high').slice(0,4);
+  document.getElementById('d-tasks').innerHTML=urgentTasks.length?urgentTasks.map(t=>`<div class="item"><div style="flex:1"><div style="font-size:0.8rem;font-weight:700">${t.name}</div>${t.clientName?`<div style="font-size:0.65rem;color:var(--teal)">👤 ${t.clientName}</div>`:''}</div><span class="badge b-high">عاجلة</span></div>`).join(''):`<div class="empty" style="padding:14px"><p>لا مهام عاجلة 🎉</p></div>`;
+  const rv=[...visits].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,4);
+  document.getElementById('d-visits').innerHTML=rv.length?rv.map(v=>`<div class="item"><div style="flex:1"><div style="font-size:0.8rem;font-weight:700">${v.clientName}</div><div style="font-size:0.65rem;color:var(--muted)">${v.title||v.type} • ${v.date||''} ${v.governorate?`• 📍${v.governorate}`:''}</div></div><span class="badge ${v.status==='done'?'b-active':'b-blue'}">${v.status==='done'?'تمت':'مخططة'}</span></div>`).join(''):`<div class="empty" style="padding:14px"><p>لا زيارات</p></div>`;
+  const rf=[...finances].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,4);
+  document.getElementById('d-fin').innerHTML=rf.length?rf.map(f=>`<div class="item"><div style="flex:1"><div style="font-size:0.8rem;font-weight:700">${f.note||f.category}</div><div style="font-size:0.65rem;color:var(--muted)">${f.date||''}</div></div><div style="font-size:0.88rem;font-weight:900;color:${f.type==='income'?'var(--green)':'var(--red)'}">${f.type==='income'?'+':'-'}${fmt(f.amount)}</div></div>`).join(''):`<div class="empty" style="padding:14px"><p>لا حركات</p></div>`;
+}
+
+// CLIENTS
+window.addClient=async function(){
+  if(!canWrite()){notify('⛔ ليس لديك صلاحية');return;}
+  const n=document.getElementById('cl-n').value.trim();
+  if(!n){notify('⚠️ أدخل اسم العميل');return;}
+  setSyncStatus('syncing');
+  try{
+    await addDoc(collection(db,'clients'),{name:n,type:document.getElementById('cl-t').value,phone:document.getElementById('cl-ph').value,specialization:document.getElementById('cl-spec').value,governorate:document.getElementById('cl-gov').value,area:document.getElementById('cl-ar').value,notes:document.getElementById('cl-no').value,created:todayStr,createdBy:currentUser.uid});
+    ['cl-n','cl-ph','cl-ar','cl-no'].forEach(id=>document.getElementById(id).value='');
+    notify('✅ تم إضافة العميل');
+  }catch(e){notify('❌ خطأ في الحفظ: '+e.message);}
+}
+window.delClient=async function(id){if(!canDelete()){notify('⛔ فقط المدير يحذف');return;}if(!confirm('حذف هذا العميل؟'))return;await deleteDoc(doc(db,'clients',id));notify('🗑️ تم الحذف');}
+let clFilter='all';
+window.fClients=function(f,el){clFilter=f;document.querySelectorAll('#clients .fbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderClients();}
+function renderClients(){
+  const list=document.getElementById('cl-list');
+  let data=clFilter==='all'?clients:clients.filter(c=>c.type===clFilter);
+  document.getElementById('cl-sum').textContent=`${clients.length} عميل`;
+  if(!data.length){list.innerHTML='<div class="empty"><div class="empty-ico">👥</div><p>لا يوجد عملاء</p></div>';return;}
+  list.innerHTML=data.map(c=>{
+    const cv=visits.filter(v=>v.clientId==c.id&&v.status==='done').length;
+    const cc=contracts.filter(con=>con.clientId==c.id).length;
+    const cf=finances.filter(f=>f.clientId==c.id&&f.type==='income').reduce((a,f)=>a+f.amount,0);
+    const lastV=visits.filter(v=>v.clientId==c.id&&v.status==='done').sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];
+    const daysSince=lastV?Math.round((today-new Date(lastV.date))/(1000*60*60*24)):999;
+    return`<div class="visit-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <div style="flex:1">
+          <div class="vc-name">${tIcon(c.type)} ${c.name}</div>
+          ${c.specialization?`<div class="vc-title">🩺 ${c.specialization}</div>`:''}
+          <div class="vc-meta">📍 ${c.governorate||''} ${c.area?`- ${c.area}`:''} ${c.phone?`• 📞 ${c.phone}`:''}<br>🏥 ${cv} زيارة • 📄 ${cc} عقد ${cf?`• 💰 ${fmt(cf)}`:''}<br>${lastV?`🕐 آخر زيارة: ${lastV.date} (منذ ${daysSince} يوم)`:'🔴 لم يتم زيارته بعد'}${c.notes?`<br>📝 ${c.notes}`:''}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+          ${daysSince>30?'<span class="badge b-high">تحتاج زيارة</span>':'<span class="badge b-active">نشط</span>'}
+          ${canDelete()?`<button class="del-btn" onclick="delClient('${c.id}')">🗑️</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// VISITS
+window.addVisit=async function(){
+  if(!canWrite()){notify('⛔ ليس لديك صلاحية');return;}
+  const cid=document.getElementById('v-cl').value;
+  if(!cid){notify('⚠️ اختر العميل');return;}
+  setSyncStatus('syncing');
+  try{
+    await addDoc(collection(db,'visits'),{clientId:cid,clientName:cName(cid),title:document.getElementById('v-title').value,specialization:document.getElementById('v-spec').value,type:document.getElementById('v-type').value,date:document.getElementById('v-date').value,status:document.getElementById('v-stat').value,governorate:document.getElementById('v-gov').value,area:document.getElementById('v-area').value,duration:parseInt(document.getElementById('v-dur').value)||0,contractId:document.getElementById('v-con').value||null,result:document.getElementById('v-result').value,nextStep:document.getElementById('v-next').value,created:todayStr,createdBy:currentUser.uid});
+    ['v-title','v-area','v-result','v-next'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('v-dur').value='';
+    notify('✅ تم تسجيل الزيارة');
+  }catch(e){notify('❌ خطأ: '+e.message);}
+}
+window.delVisit=async function(id){if(!canDelete()){notify('⛔ فقط المدير يحذف');return;}await deleteDoc(doc(db,'visits',id));notify('🗑️ تم الحذف');}
+window.fVisits=function(f,el){vF=f;document.querySelectorAll('#visits .fbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderVisits();}
+function renderVisits(){
+  const list=document.getElementById('v-list');
+  const sum=document.getElementById('v-sum');
+  let data=vF==='all'?visits:visits.filter(v=>v.status===vF);
+  const done=visits.filter(v=>v.status==='done').length;
+  sum.textContent=`${done}/${visits.length} مكتملة`;
+  if(!data.length){list.innerHTML='<div class="empty"><div class="empty-ico">🏥</div><p>لا توجد زيارات</p></div>';return;}
+  list.innerHTML=[...data].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(v=>`
+    <div class="visit-card">
+      <div class="vc-name">🏥 ${v.clientName}</div>
+      ${v.title?`<div class="vc-title">📌 ${v.title}</div>`:''}
+      <div class="vc-meta">
+        🩺 ${v.specialization||'عام'} • 📋 ${v.type} • 📅 ${v.date||''}
+        ${v.governorate?`• 📍 ${v.governorate}${v.area?` - ${v.area}`:''}` :''}
+        ${v.duration?`• ⏱️ ${v.duration} دقيقة`:''}
+        ${v.result?`<br>✅ ${v.result}`:''}
+        ${v.nextStep?`<br>➡️ <strong>${v.nextStep}</strong>`:''}
+      </div>
+      <span class="vc-status vs-${v.status}">${v.status==='done'?'تمت':v.status==='planned'?'مخططة':'ملغاة'}</span>
+      ${canDelete()?`<button class="del-btn" style="position:absolute;bottom:10px;left:12px" onclick="delVisit('${v.id}')">✕</button>`:''}
+    </div>`).join('');
+}
+function renderVStatsRow(){
+  const el=document.getElementById('v-stats-row');if(!el)return;
+  const done=visits.filter(v=>v.status==='done').length;
+  const planned=visits.filter(v=>v.status==='planned').length;
+  const avgDur=done?Math.round(visits.filter(v=>v.status==='done'&&v.duration).reduce((a,v)=>a+v.duration,0)/Math.max(visits.filter(v=>v.status==='done'&&v.duration).length,1)):0;
+  el.innerHTML=`
+    <div class="sbox sb-blue"><div class="snum" style="color:var(--teal)">${visits.length}</div><div class="slbl">إجمالي</div></div>
+    <div class="sbox sb-green"><div class="snum" style="color:var(--green)">${done}</div><div class="slbl">مكتملة</div></div>
+    <div class="sbox sb-gold"><div class="snum" style="color:var(--gold)">${avgDur}</div><div class="slbl">متوسط الوقت (د)</div></div>`;
+}
+function renderVisitAnalytics(){
+  const el=document.getElementById('v-analytics');if(!el)return;
+  const total=visits.length,done=visits.filter(v=>v.status==='done').length;
+  const byType={};visits.forEach(v=>{byType[v.type]=(byType[v.type]||0)+1;});
+  const bySpec={};visits.forEach(v=>{if(v.specialization)bySpec[v.specialization]=(bySpec[v.specialization]||0)+1;});
+  el.innerHTML=`
+    <div class="prog-wrap"><div class="prog-hd"><span>نسبة الإنجاز</span><span>${pct(done,total)}%</span></div><div class="prog-bar"><div class="prog-fill pf-g" style="width:${pct(done,total)}%"></div></div></div>
+    ${Object.keys(byType).length?`<div style="margin-top:10px;font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:6px">حسب نوع الزيارة</div>${Object.entries(byType).map(([k,v])=>`<div class="chart-row"><div class="chart-lbl">${k}</div><div class="chart-track"><div class="chart-fill pf-b" style="width:${pct(v,total)}%"></div></div><div class="chart-val">${v} زيارة</div></div>`).join('')}`:''}
+    ${Object.keys(bySpec).length?`<div style="margin-top:12px;font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:6px">حسب التخصص</div>${Object.entries(bySpec).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([k,v])=>`<div class="chart-row"><div class="chart-lbl">${k}</div><div class="chart-track"><div class="chart-fill pf-gold" style="width:${pct(v,total)}%"></div></div><div class="chart-val">${v} زيارة</div></div>`).join('')}`:''}`;
+}
+function renderVisitMap(){
+  const el=document.getElementById('v-map');if(!el)return;
+  const byGov={};visits.filter(v=>v.status==='done').forEach(v=>{if(v.governorate)byGov[v.governorate]=(byGov[v.governorate]||0)+1;});
+  if(!Object.keys(byGov).length){el.innerHTML='<div class="empty" style="padding:16px"><p>أضف زيارات مع المحافظة</p></div>';return;}
+  const max=Math.max(...Object.values(byGov));
+  el.innerHTML=`<div class="gov-map">${Object.entries(byGov).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="gov-item" style="border-color:${v===max?'var(--accent)':'var(--border)'}"><div class="gov-num">${v}</div><div class="gov-name">${k}</div></div>`).join('')}</div>`;
+}
+
+// TASKS
+window.addTask=async function(){
+  if(!canWrite()){notify('⛔ ليس لديك صلاحية');return;}
+  const n=document.getElementById('t-n').value.trim();
+  if(!n){notify('⚠️ أدخل المهمة');return;}
+  const cid=document.getElementById('t-cl').value;
+  setSyncStatus('syncing');
+  try{
+    await addDoc(collection(db,'tasks'),{name:n,priority:document.getElementById('t-p').value,date:document.getElementById('t-d').value,category:document.getElementById('t-cat').value,clientId:cid||null,clientName:cid?cName(cid):'',done:false,created:todayStr,createdBy:currentUser.uid});
+    document.getElementById('t-n').value='';notify('✅ تمت الإضافة');
+  }catch(e){notify('❌ خطأ');}
+}
+window.toggleTask=async function(id,done){if(!canWrite()){notify('⛔ ليس لديك صلاحية');return;}await updateDoc(doc(db,'tasks',id),{done:!done});}
+window.delTask=async function(id){if(!canDelete()){notify('⛔ فقط المدير');return;}await deleteDoc(doc(db,'tasks',id));notify('🗑️ تم الحذف');}
+window.fTasks=function(f,el){tF=f;document.querySelectorAll('#tasks .fbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderTasks();}
+function renderTasks(){
+  const list=document.getElementById('t-list');
+  let data=tF==='all'?tasks:tF==='pending'?tasks.filter(t=>!t.done):tF==='done'?tasks.filter(t=>t.done):tasks.filter(t=>t.priority==='high');
+  const done=tasks.filter(t=>t.done).length;
+  document.getElementById('t-sum').textContent=`${done}/${tasks.length} مكتملة`;
+  if(!data.length){list.innerHTML='<div class="empty"><div class="empty-ico">📋</div><p>لا توجد مهام</p></div>';return;}
+  list.innerHTML=[...data].sort((a,b)=>{const p={high:0,med:1,low:2};return(a.done-b.done)||(p[a.priority]-p[b.priority]);}).map(t=>`
+    <div class="item">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid ${t.done?'var(--green)':'var(--border)'};background:${t.done?'var(--green)':'transparent'};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" onclick="toggleTask('${t.id}',${t.done})">${t.done?'<span style="color:#fff;font-size:11px">✓</span>':''}</div>
+      <div style="flex:1;${t.done?'opacity:0.5;text-decoration:line-through':''}">
+        <div style="font-size:0.82rem;font-weight:700">${t.name}</div>
+        ${t.clientName?`<div style="font-size:0.65rem;color:var(--teal)">👤 ${t.clientName}</div>`:''}
+      </div>
+      <span class="badge ${t.priority==='high'?'b-high':t.priority==='med'?'b-med':'b-low'}">${t.priority==='high'?'عالية':t.priority==='med'?'متوسطة':'منخفضة'}</span>
+      ${t.date?`<span style="font-size:0.65rem;color:var(--muted)">${t.date}</span>`:''}
+      ${canDelete()?`<button class="del-btn" onclick="delTask('${t.id}')">✕</button>`:''}
+    </div>`).join('');
+}
+
+// CONTRACTS
+window.addContract=async function(){
+  if(!canWrite()){notify('⛔ ليس لديك صلاحية');return;}
+  const cid=document.getElementById('con-cl').value;
+  if(!cid){notify('⚠️ اختر العميل');return;}
+  const val=parseFloat(document.getElementById('con-val').value)||0;
+  const inst=parseInt(document.getElementById('con-inst').value)||1;
+  const pt=document.getElementById('con-pt').value;
+  const start=document.getElementById('con-s').value||todayStr;
+  const payments=[];
+  for(let i=0;i<inst;i++){
+    let d=new Date(start);
+    if(pt==='monthly')d.setMonth(d.getMonth()+i);
+    else if(pt==='quarterly')d.setMonth(d.getMonth()+(i*3));
+    payments.push({num:i+1,amount:Math.round(val/inst),date:d.toISOString().split('T')[0],status:'pending'});
+  }
+  const monthlyValue=pt==='monthly'?Math.round(val/inst):pt==='quarterly'?Math.round(val/inst/3):0;
+  setSyncStatus('syncing');
+  try{
+    await addDoc(collection(db,'contracts'),{clientId:cid,clientName:cName(cid),service:document.getElementById('con-srv').value,value:val,monthlyValue,status:document.getElementById('con-stat').value,start,end:document.getElementById('con-e').value,payType:pt,installments:inst,payments,notes:document.getElementById('con-no').value,created:todayStr,createdBy:currentUser.uid});
+    ['con-val','con-no'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('con-inst').value='1';
+    notify('✅ تم حفظ العقد');
+  }catch(e){notify('❌ خطأ: '+e.message);}
+}
+window.togglePay=async function(cid,pnum){
+  if(!canWrite()){notify('⛔ ليس لديك صلاحية');return;}
+  const c=contracts.find(c=>c.id===cid);if(!c)return;
+  const payments=[...(c.payments||[])];
+  const p=payments.find(p=>p.num===pnum);if(!p)return;
+  p.status=p.status==='paid'?'pending':'paid';
+  await updateDoc(doc(db,'contracts',cid),{payments});
+  notify(p.status==='paid'?'✅ تم تسجيل الدفعة':'↩️ تم الإلغاء');
+}
+window.delContract=async function(id){if(!canDelete()){notify('⛔ فقط المدير');return;}await deleteDoc(doc(db,'contracts',id));notify('🗑️ تم الحذف');}
+function renderConStatsRow(){
+  const el=document.getElementById('con-stats-row');if(!el)return;
+  const total=contracts.length,active=contracts.filter(c=>c.status==='active').length,seasonal=contracts.filter(c=>c.status==='seasonal').length;
+  const col=contracts.reduce((a,c)=>a+(c.payments||[]).filter(p=>p.status==='paid').reduce((b,p)=>b+p.amount,0),0);
+  const totalVal=contracts.reduce((a,c)=>a+c.value,0);
+  el.innerHTML=`
+    <div class="sbox sb-blue"><div class="snum" style="color:var(--teal)">${total}</div><div class="slbl">إجمالي</div></div>
+    <div class="sbox sb-green"><div class="snum" style="color:var(--green)">${active}</div><div class="slbl">نشط</div></div>
+    <div class="sbox sb-purple"><div class="snum" style="color:var(--purple)">${seasonal}</div><div class="slbl">موسمي</div></div>
+    <div class="sbox sb-gold"><div class="snum" style="color:var(--gold);font-size:0.85rem">${fmt(col)}</div><div class="slbl">محصّل</div><div class="ssub">${pct(col,totalVal)}% من الإجمالي</div></div>`;
+}
+function renderContracts(){
+  const list=document.getElementById('con-list');
+  const sum=document.getElementById('con-sum');
+  if(!contracts.length){list.innerHTML='<div class="empty"><div class="empty-ico">📄</div><p>لا توجد عقود</p></div>';sum.textContent='';return;}
+  const active=contracts.filter(c=>c.status==='active'||c.status==='seasonal').length;
+  sum.textContent=`${active} نشط • ${fmt(contracts.reduce((a,c)=>a+c.value,0))} إجمالي`;
+  const statL={active:'نشط',seasonal:'موسمي',pending:'معلق',ended:'منتهي'};
+  const statC={active:'b-active',seasonal:'b-seasonal',pending:'b-pending',ended:'b-ended'};
+  list.innerHTML=[...contracts].sort((a,b)=>(b.created||'').localeCompare(a.created||'')).map(c=>{
+    const paid=(c.payments||[]).filter(p=>p.status==='paid').reduce((a,p)=>a+p.amount,0);
+    const remaining=c.value-paid;
+    const pp=pct(paid,c.value);
+    const cVisits=visits.filter(v=>v.contractId===c.id).length;
+    return`<div class="con-card">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.88rem;color:var(--navy)">📄 ${c.clientName}</div>
+          <div style="font-size:0.7rem;color:var(--muted);line-height:1.8">🔧 ${c.service} • 📅 ${c.start||''}→${c.end||'—'}
+          ${c.monthlyValue?`<br>📅 القيمة الشهرية: <strong style="color:var(--teal)">${fmt(c.monthlyValue)}</strong>`:''}
+          ${cVisits?`• 🏥 ${cVisits} زيارة مرتبطة`:''}</div>
+          <div style="font-size:0.72rem;margin-top:4px">
+            <span style="color:var(--green)">✅ محصّل: ${fmt(paid)}</span> •
+            <span style="color:var(--red)">⏳ متبقي: ${fmt(remaining)}</span>
+          </div>
+          <div class="prog-bar" style="margin-top:5px;height:7px"><div class="prog-fill pf-gold" style="width:${pp}%"></div></div>
+          <div style="font-size:0.65rem;color:var(--muted);margin-top:2px">${pp}% محصّل</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          <div style="font-size:1rem;font-weight:900;color:var(--teal)">${fmt(c.value)}</div>
+          <span class="badge ${statC[c.status]}">${statL[c.status]}</span>
+          ${canDelete()?`<button class="del-btn" onclick="delContract('${c.id}')">🗑️</button>`:''}
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">${(c.payments||[]).map(p=>`<span class="pay-chip ${p.status}" onclick="togglePay('${c.id}',${p.num})" title="${p.date}">${p.status==='paid'?'✅':'⏳'} د${p.num} ${fmt(p.amount)} <span style="font-size:0.58rem;opacity:0.8">${p.date}</span></span>`).join('')}</div>
+      ${c.notes?`<div style="font-size:0.68rem;color:var(--muted);margin-top:6px">📝 ${c.notes}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// FINANCE
+function renderConFinSummary(){
+  const el=document.getElementById('con-fin-summary');if(!el)return;
+  if(!contracts.filter(c=>c.status==='active'||c.status==='seasonal').length){el.innerHTML='<div style="font-size:0.78rem;color:var(--muted);padding:8px">لا توجد عقود نشطة</div>';return;}
+  el.innerHTML=contracts.filter(c=>c.status==='active'||c.status==='seasonal').map(c=>{
+    const paid=(c.payments||[]).filter(p=>p.status==='paid').reduce((a,p)=>a+p.amount,0);
+    const remaining=c.value-paid;
+    const nextPay=(c.payments||[]).find(p=>p.status==='pending');
+    const cFin=finances.filter(f=>f.contractId===c.id&&f.type==='income').reduce((a,f)=>a+f.amount,0);
+    return`<div class="con-fin-card">
+      <div class="con-fin-name">📄 ${c.clientName} — ${c.service}</div>
+      <div class="con-fin-row">
+        <div class="con-fin-item"><div class="con-fin-num" style="color:#1DB954">${fmt(c.value)}</div><div class="con-fin-lbl">قيمة العقد</div></div>
+        ${c.monthlyValue?`<div class="con-fin-item"><div class="con-fin-num" style="color:var(--accent)">${fmt(c.monthlyValue)}</div><div class="con-fin-lbl">القيمة الشهرية</div></div>`:''}
+        <div class="con-fin-item"><div class="con-fin-num" style="color:#52E88A">${fmt(paid)}</div><div class="con-fin-lbl">محصّل</div></div>
+        <div class="con-fin-item"><div class="con-fin-num" style="color:#FF6B7A">${fmt(remaining)}</div><div class="con-fin-lbl">متبقي</div></div>
+      </div>
+      ${cFin?`<div style="font-size:0.7rem;color:rgba(255,255,255,0.7);margin-top:6px">💰 مسجّل في المالية: ${fmt(cFin)}</div>`:''}
+      ${nextPay?`<div style="font-size:0.7rem;color:var(--gold);margin-top:4px">⏳ الدفعة القادمة: ${fmt(nextPay.amount)} في ${nextPay.date}</div>`:'<div style="font-size:0.7rem;color:#52E88A;margin-top:4px">✅ جميع الدفعات مسددة</div>'}
+      <div class="prog-bar" style="margin-top:8px;height:5px;background:rgba(255,255,255,0.1)"><div class="prog-fill pf-g" style="width:${pct(paid,c.value)}%"></div></div>
+    </div>`;
+  }).join('');
+}
+window.addFinance=async function(){
+  if(!canWrite()){notify('⛔ ليس لديك صلاحية');return;}
+  const amt=parseFloat(document.getElementById('f-amt').value);
+  if(!amt||amt<=0){notify('⚠️ أدخل مبلغ');return;}
+  const cid=document.getElementById('f-cl').value;
+  setSyncStatus('syncing');
+  try{
+    await addDoc(collection(db,'finances'),{type:document.getElementById('f-type').value,amount:amt,category:document.getElementById('f-cat').value,date:document.getElementById('f-date').value,clientId:cid||null,clientName:cid?cName(cid):'',contractId:document.getElementById('f-con').value||null,note:document.getElementById('f-note').value,created:todayStr,createdBy:currentUser.uid});
+    ['f-amt','f-note'].forEach(id=>document.getElementById(id).value='');
+    notify('✅ تمت الإضافة');
+  }catch(e){notify('❌ خطأ');}
+}
+window.delFinance=async function(id){if(!canDelete()){notify('⛔ فقط المدير');return;}await deleteDoc(doc(db,'finances',id));notify('🗑️ تم الحذف');}
+window.fFin=function(f,el){fF=f;document.querySelectorAll('#finance .fbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderFinance();}
+function updateBal(){
+  const inc=finances.filter(f=>f.type==='income').reduce((a,f)=>a+f.amount,0);
+  const exp=finances.filter(f=>f.type==='expense').reduce((a,f)=>a+f.amount,0);
+  document.getElementById('b-in').textContent=fmt(inc);
+  document.getElementById('b-ex').textContent=fmt(exp);
+  const ne=document.getElementById('b-net');ne.textContent=fmt(inc-exp);ne.style.color=(inc-exp)>=0?'#1DB954':'#FF6B7A';
+}
+function renderFinance(){
+  const list=document.getElementById('fin-list');
+  let data=fF==='all'?finances:finances.filter(f=>f.type===fF);
+  if(!data.length){list.innerHTML='<div class="empty"><div class="empty-ico">💰</div><p>لا توجد حركات</p></div>';return;}
+  list.innerHTML=[...data].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(f=>`
+    <div class="item">
+      <div style="width:34px;height:34px;border-radius:9px;background:${f.type==='income'?'#E6F9EC':'#FFEBEC'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${f.type==='income'?'💚':'🔴'}</div>
+      <div style="flex:1">
+        <div style="font-size:0.8rem;font-weight:700">${f.note||f.category}${f.clientName?` • 👤 ${f.clientName}`:''}</div>
+        <div style="font-size:0.67rem;color:var(--muted)">📅 ${f.date||''} <span class="badge b-blue" style="font-size:0.6rem">${f.category}</span></div>
+      </div>
+      <div style="font-size:0.9rem;font-weight:900;color:${f.type==='income'?'var(--green)':'var(--red)'}">${f.type==='income'?'+':'-'}${fmt(f.amount)}</div>
+      ${canDelete()?`<button class="del-btn" onclick="delFinance('${f.id}')">✕</button>`:''}
+    </div>`).join('');
+}
+function renderFinAnalytics(){
+  const el=document.getElementById('fin-analytics');if(!el)return;
+  const inc=finances.filter(f=>f.type==='income').reduce((a,f)=>a+f.amount,0);
+  const exp=finances.filter(f=>f.type==='expense').reduce((a,f)=>a+f.amount,0);
+  const eCats={};finances.filter(f=>f.type==='expense').forEach(f=>{eCats[f.category]=(eCats[f.category]||0)+f.amount;});
+  const iCats={};finances.filter(f=>f.type==='income').forEach(f=>{iCats[f.category]=(iCats[f.category]||0)+f.amount;});
+  el.innerHTML=`
+    <div class="prog-wrap"><div class="prog-hd"><span>نسبة المصاريف من الدخل</span><span>${pct(exp,inc)}%</span></div><div class="prog-bar"><div class="prog-fill pf-r" style="width:${Math.min(pct(exp,inc),100)}%"></div></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+      <div><div style="font-size:0.72rem;font-weight:700;color:var(--green);margin-bottom:6px">💚 مصادر الدخل</div>${Object.entries(iCats).map(([k,v])=>`<div class="chart-row"><div class="chart-lbl">${k}</div><div class="chart-track"><div class="chart-fill pf-g" style="width:${pct(v,inc)}%"></div></div><div class="chart-val" style="font-size:0.62rem">${fmt(v)}</div></div>`).join('')||'<div style="font-size:0.72rem;color:var(--muted)">لا بيانات</div>'}</div>
+      <div><div style="font-size:0.72rem;font-weight:700;color:var(--red);margin-bottom:6px">🔴 أبواب المصاريف</div>${Object.entries(eCats).map(([k,v])=>`<div class="chart-row"><div class="chart-lbl">${k}</div><div class="chart-track"><div class="chart-fill pf-r" style="width:${pct(v,exp)}%"></div></div><div class="chart-val" style="font-size:0.62rem">${fmt(v)}</div></div>`).join('')||'<div style="font-size:0.72rem;color:var(--muted)">لا بيانات</div>'}</div>
+    </div>`;
+}
+
+// MONTHLY REPORTS
+window.addMonthlyReport=async function(){
+  if(!canWrite()){notify('⛔ ليس لديك صلاحية');return;}
+  const month=document.getElementById('mr-month').value;
+  if(!month){notify('⚠️ اختر الشهر');return;}
+  const cid=document.getElementById('mr-cl').value;
+  setSyncStatus('syncing');
+  try{
+    await addDoc(collection(db,'monthlyReports'),{clientId:cid||null,clientName:cid?cName(cid):'عام',month,positives:document.getElementById('mr-pos').value,negatives:document.getElementById('mr-neg').value,opportunities:document.getElementById('mr-opp').value,goals:document.getElementById('mr-goals').value,score:parseInt(document.getElementById('mr-score').value)||0,notes:document.getElementById('mr-notes').value,created:todayStr,createdBy:currentUser.uid});
+    ['mr-pos','mr-neg','mr-opp','mr-goals','mr-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('mr-score').value='';
+    notify('💾 تم حفظ التقرير');
+  }catch(e){notify('❌ خطأ');}
+}
+window.delMR=async function(id){if(!canDelete()){notify('⛔ فقط المدير');return;}await deleteDoc(doc(db,'monthlyReports',id));notify('🗑️ تم الحذف');}
+function renderMonthly(){
+  const list=document.getElementById('mr-list');
+  document.getElementById('mr-sum').textContent=`${monthlyReports.length} تقرير`;
+  if(!monthlyReports.length){list.innerHTML='<div class="empty"><div class="empty-ico">📝</div><p>لا توجد تقارير بعد</p></div>';return;}
+  list.innerHTML=[...monthlyReports].sort((a,b)=>(b.month||'').localeCompare(a.month||'')).map(r=>`
+    <div class="mr-card">
+      <div class="mr-hd">
+        <div><div class="mr-title">📝 ${r.clientName} — ${r.month}</div><div style="font-size:0.68rem;color:var(--muted)">${r.created||''}</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${r.score?`<div style="background:${r.score>=7?'#E6F9EC':r.score>=5?'#FFF4E6':'#FFEBEC'};color:${r.score>=7?'var(--green)':r.score>=5?'var(--yellow)':'var(--red)'};border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem">${r.score}</div>`:''}
+          ${canDelete()?`<button class="del-btn" onclick="delMR('${r.id}')">🗑️</button>`:''}
+        </div>
+      </div>
+      ${r.positives?`<div style="font-size:0.75rem;color:var(--green);margin-top:5px">✅ ${r.positives.substring(0,80)}...</div>`:''}
+      ${r.negatives?`<div style="font-size:0.75rem;color:var(--red);margin-top:3px">⚠️ ${r.negatives.substring(0,80)}...</div>`:''}
+      ${r.goals?`<div style="font-size:0.72rem;color:var(--teal);margin-top:4px;font-weight:600">🎯 ${r.goals.substring(0,60)}...</div>`:''}
+    </div>`).join('');
+}
+
+// ANALYTICS
+function renderAnalytics(){
+  const inc=finances.filter(f=>f.type==='income').reduce((a,f)=>a+f.amount,0);
+  const exp=finances.filter(f=>f.type==='expense').reduce((a,f)=>a+f.amount,0);
+  document.getElementById('ana-stats').innerHTML=`
+    <div class="sbox sb-blue"><div class="snum" style="color:var(--teal)">${clients.length}</div><div class="slbl">عملاء</div></div>
+    <div class="sbox sb-green"><div class="snum" style="color:var(--green)">${visits.filter(v=>v.status==='done').length}</div><div class="slbl">زيارات</div></div>
+    <div class="sbox sb-gold"><div class="snum" style="color:var(--gold)">${contracts.filter(c=>c.status==='active'||c.status==='seasonal').length}</div><div class="slbl">عقود نشطة</div></div>
+    <div class="sbox sb-purple"><div class="snum" style="color:var(--purple);font-size:0.85rem">${fmt(inc-exp)}</div><div class="slbl">صافي الربح</div></div>`;
+  // Conversion rate
+  const doneVisits=visits.filter(v=>v.status==='done').length;
+  const convRate=doneVisits?pct(contracts.length,doneVisits):0;
+  document.getElementById('conv-rate').textContent=convRate+'%';
+  const avgDur=doneVisits?Math.round(visits.filter(v=>v.status==='done'&&v.duration).reduce((a,v)=>a+v.duration,0)/Math.max(visits.filter(v=>v.status==='done'&&v.duration).length,1)):0;
+  document.getElementById('avg-visit-time').textContent=avgDur||'—';
+  // Clients by type
+  const ct={};clients.forEach(c=>{ct[c.type]=(ct[c.type]||0)+1;});
+  document.getElementById('ana-cl').innerHTML=Object.keys(ct).length?Object.entries(ct).map(([k,v])=>`<div class="chart-row"><div class="chart-lbl">${tIcon(k)} ${k}</div><div class="chart-track"><div class="chart-fill pf-b" style="width:${pct(v,clients.length)}%"></div></div><div class="chart-val">${v}</div></div>`).join(''):'<div class="empty" style="padding:14px"><p>لا يوجد عملاء</p></div>';
+  // Gov distribution
+  const byGov={};visits.filter(v=>v.status==='done').forEach(v=>{if(v.governorate)byGov[v.governorate]=(byGov[v.governorate]||0)+1;});
+  document.getElementById('ana-gov').innerHTML=Object.keys(byGov).length?`<div class="gov-map">${Object.entries(byGov).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([k,v])=>`<div class="gov-item"><div class="gov-num">${v}</div><div class="gov-name">${k}</div></div>`).join('')}</div>`:'<div class="empty" style="padding:14px"><p>أضف زيارات مع المحافظة</p></div>';
+  // Tasks
+  const td=tasks.filter(t=>t.done).length;
+  document.getElementById('ana-t').innerHTML=`<div class="prog-wrap"><div class="prog-hd"><span>الإنجاز</span><span>${pct(td,tasks.length)}%</span></div><div class="prog-bar"><div class="prog-fill pf-g" style="width:${pct(td,tasks.length)}%"></div></div></div><div style="display:flex;gap:8px;margin-top:8px;text-align:center"><div style="flex:1;padding:8px;background:var(--bg);border-radius:8px"><div style="font-size:1.2rem;font-weight:900;color:var(--green)">${td}</div><div style="font-size:0.65rem;color:var(--muted)">مكتملة</div></div><div style="flex:1;padding:8px;background:var(--bg);border-radius:8px"><div style="font-size:1.2rem;font-weight:900;color:var(--red)">${tasks.filter(t=>!t.done&&t.priority==='high').length}</div><div style="font-size:0.65rem;color:var(--muted)">عاجلة</div></div></div>`;
+  // Finance
+  document.getElementById('ana-f').innerHTML=`<div style="display:flex;gap:8px;margin-bottom:10px"><div style="flex:1;padding:10px;background:#E6F9EC;border-radius:9px;text-align:center"><div style="font-size:0.9rem;font-weight:900;color:var(--green)">${fmt(inc)}</div><div style="font-size:0.65rem;color:var(--muted)">دخل</div></div><div style="flex:1;padding:10px;background:#FFEBEC;border-radius:9px;text-align:center"><div style="font-size:0.9rem;font-weight:900;color:var(--red)">${fmt(exp)}</div><div style="font-size:0.65rem;color:var(--muted)">مصاريف</div></div></div><div class="prog-wrap"><div class="prog-hd"><span>الصافي</span><span style="color:${(inc-exp)>=0?'var(--green)':'var(--red)'}">${fmt(inc-exp)}</span></div><div class="prog-bar"><div class="prog-fill ${(inc-exp)>=0?'pf-g':'pf-r'}" style="width:${Math.min(pct(Math.abs(inc-exp),inc+1),100)}%"></div></div></div>`;
+  // Contracts
+  const totalCon=contracts.reduce((a,c)=>a+c.value,0);
+  const colCon=contracts.reduce((a,c)=>a+(c.payments||[]).filter(p=>p.status==='paid').reduce((b,p)=>b+p.amount,0),0);
+  document.getElementById('ana-con').innerHTML=`<div class="prog-wrap"><div class="prog-hd"><span>التحصيل</span><span>${pct(colCon,totalCon)}%</span></div><div class="prog-bar"><div class="prog-fill pf-gold" style="width:${pct(colCon,totalCon)}%"></div></div></div><div style="display:flex;gap:8px;text-align:center"><div style="flex:1;padding:8px;background:var(--bg);border-radius:8px"><div style="font-size:0.85rem;font-weight:900;color:var(--gold)">${fmt(totalCon)}</div><div style="font-size:0.62rem;color:var(--muted)">إجمالي</div></div><div style="flex:1;padding:8px;background:var(--bg);border-radius:8px"><div style="font-size:0.85rem;font-weight:900;color:var(--green)">${fmt(colCon)}</div><div style="font-size:0.62rem;color:var(--muted)">محصّل</div></div></div>`;
+  // Top clients
+  const topData=clients.map(c=>({...c,score:finances.filter(f=>f.clientId==c.id&&f.type==='income').reduce((a,f)=>a+f.amount,0)+contracts.filter(con=>con.clientId==c.id).reduce((a,con)=>a+con.value,0),vCount:visits.filter(v=>v.clientId==c.id&&v.status==='done').length})).sort((a,b)=>b.score-a.score).slice(0,5);
+  document.getElementById('ana-top').innerHTML=topData.length?topData.map((c,i)=>`<div class="item"><div style="width:26px;height:26px;border-radius:50%;background:${['var(--gold)','#C0C0C0','#CD7F32','var(--teal)','var(--muted)'][i]};color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;flex-shrink:0">${i+1}</div><div style="flex:1"><div style="font-size:0.8rem;font-weight:700">${tIcon(c.type)} ${c.name}</div><div style="font-size:0.65rem;color:var(--muted)">${c.vCount} زيارة ${c.score?'• '+fmt(c.score):''}</div></div></div>`).join(''):'<div class="empty" style="padding:14px"><p>أضف بيانات</p></div>';
+  // Goals
+  const sg=JSON.parse(localStorage.getItem('gm_goals')||'{}');
+  if(sg.visits)document.getElementById('goal-v').value=sg.visits;
+  if(sg.income)document.getElementById('goal-i').value=sg.income;
+  if(sg.contracts)document.getElementById('goal-c').value=sg.contracts;
+  renderGoalsProgress(sg,inc);
+  document.getElementById('weekly-notes').value=localStorage.getItem('gm_notes')||'';
+}
+window.saveGoals=function(){
+  const g={visits:parseInt(document.getElementById('goal-v').value)||0,income:parseInt(document.getElementById('goal-i').value)||0,contracts:parseInt(document.getElementById('goal-c').value)||0};
+  localStorage.setItem('gm_goals',JSON.stringify(g));
+  const inc=finances.filter(f=>f.type==='income').reduce((a,f)=>a+f.amount,0);
+  renderGoalsProgress(g,inc);notify('🎯 تم حفظ الأهداف');
+}
+function renderGoalsProgress(g,inc){
+  const el=document.getElementById('goals-progress');if(!el||!g)return;
+  const curV=visits.filter(v=>v.status==='done').length;
+  const curC=contracts.filter(c=>c.status==='active'||c.status==='seasonal').length;
+  if(!g.visits&&!g.income&&!g.contracts){el.innerHTML='';return;}
+  el.innerHTML=`
+    ${g.visits?`<div class="prog-wrap"><div class="prog-hd"><span>🏥 الزيارات ${curV}/${g.visits}</span><span>${pct(curV,g.visits)}%</span></div><div class="prog-bar"><div class="prog-fill pf-b" style="width:${Math.min(pct(curV,g.visits),100)}%"></div></div></div>`:''}
+    ${g.income?`<div class="prog-wrap"><div class="prog-hd"><span>💰 الإيرادات ${fmt(inc)}/${fmt(g.income)}</span><span>${pct(inc,g.income)}%</span></div><div class="prog-bar"><div class="prog-fill pf-g" style="width:${Math.min(pct(inc,g.income),100)}%"></div></div></div>`:''}
+    ${g.contracts?`<div class="prog-wrap"><div class="prog-hd"><span>📄 العقود ${curC}/${g.contracts}</span><span>${pct(curC,g.contracts)}%</span></div><div class="prog-bar"><div class="prog-fill pf-gold" style="width:${Math.min(pct(curC,g.contracts),100)}%"></div></div></div>`:''}`;
+}
+window.saveNotes=function(){localStorage.setItem('gm_notes',document.getElementById('weekly-notes').value);notify('💾 تم الحفظ');}
+window.exportReport=function(){
+  const inc=finances.filter(f=>f.type==='income').reduce((a,f)=>a+f.amount,0);
+  const exp=finances.filter(f=>f.type==='expense').reduce((a,f)=>a+f.amount,0);
+  const text=`🌐 Global Marketer — تقرير شامل\n${today.toLocaleDateString('ar-EG')}\n${'='.repeat(40)}\n👥 العملاء: ${clients.length}\n🏥 الزيارات: ${visits.filter(v=>v.status==='done').length}\n📄 عقود نشطة: ${contracts.filter(c=>c.status==='active'||c.status==='seasonal').length}\n💚 الدخل: ${inc.toLocaleString()} ج\n🔴 المصاريف: ${exp.toLocaleString()} ج\n💰 الصافي: ${(inc-exp).toLocaleString()} ج\n\nالعملاء:\n${clients.map(c=>`- ${c.name} (${c.type}) — ${c.governorate||''} ${c.area||''}`).join('\n')}\n\nالعقود النشطة:\n${contracts.filter(c=>c.status==='active'||c.status==='seasonal').map(c=>`- ${c.clientName}: ${c.service} — ${fmt(c.value)}${c.monthlyValue?` (${fmt(c.monthlyValue)}/شهر)`:''}`).join('\n')}\n\n📝 الملاحظات:\n${localStorage.getItem('gm_notes')||'لا توجد'}\n\n🌐 Global Marketer`;
+  const blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`GlobalMarketer-${todayStr}.txt`;a.click();
+  notify('📤 تم التصدير');
+}
+
+// USERS
+window.addUser=async function(){
+  if(currentRole!=='admin'){notify('⛔ فقط المدير');return;}
+  const email=document.getElementById('nu-email').value.trim();
+  const pass=document.getElementById('nu-pass').value;
+  const name=document.getElementById('nu-name').value.trim();
+  const role=document.getElementById('nu-role').value;
+  if(!email||!pass||!name){notify('⚠️ أكمل البيانات');return;}
+  if(pass.length<8){notify('⚠️ كلمة المرور 8 أحرف على الأقل');return;}
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,pass);
+    await setDoc(doc(db,'users',cred.user.uid),{email,name,role,created:todayStr,createdBy:currentUser.uid});
+    ['nu-email','nu-pass','nu-name'].forEach(id=>document.getElementById(id).value='');
+    notify('✅ تم إضافة المستخدم');
+    renderUsers();
+  }catch(e){
+    const msgs={'auth/email-already-in-use':'الإيميل موجود بالفعل','auth/weak-password':'كلمة المرور ضعيفة'};
+    notify('❌ '+(msgs[e.code]||'خطأ: '+e.message));
+  }
+}
+async function renderUsers(){
+  const list=document.getElementById('users-list');if(!list)return;
+  try{
+    const snap=await getDocs(collection(db,'users'));
+    const users=snap.docs.map(d=>({id:d.id,...d.data()}));
+    list.innerHTML=users.map(u=>`<div class="user-card"><div class="user-avatar">${(u.name||u.email||'?')[0].toUpperCase()}</div><div style="flex:1"><div style="font-size:0.85rem;font-weight:700">${u.name||'—'}</div><div style="font-size:0.7rem;color:var(--muted)">📧 ${u.email}</div></div><span class="badge ${u.role==='admin'?'b-active':u.role==='staff'?'b-blue':'b-med'}">${u.role==='admin'?'👑 مدير':u.role==='staff'?'👷 موظف':'👁️ مشاهد'}</span></div>`).join('');
+  }catch(e){list.innerHTML='<div class="empty"><p>تعذر تحميل المستخدمين</p></div>';}
+}
+
+// AI
+function buildContext(){
+  const inc=finances.filter(f=>f.type==='income').reduce((a,f)=>a+f.amount,0);
+  const exp=finances.filter(f=>f.type==='expense').reduce((a,f)=>a+f.amount,0);
+  const govStats={};visits.forEach(v=>{if(v.governorate)govStats[v.governorate]=(govStats[v.governorate]||0)+1;});
+  return `أنت مساعد ذكي لنظام "Global Marketer" لإدارة التسويق الطبي.
+البيانات الحالية (${todayStr}):
+- العملاء (${clients.length}): ${clients.map(c=>`${c.name}(${c.type},${c.specialization||''},${c.governorate||''})`).join(', ')||'لا يوجد'}
+- الزيارات: ${visits.length} إجمالي، ${visits.filter(v=>v.status==='done').length} مكتملة، ${visits.filter(v=>v.status==='planned').length} مخططة
+- توزيع الزيارات: ${Object.entries(govStats).map(([k,v])=>`${k}:${v}`).join(', ')||'لا يوجد'}
+- المهام: ${tasks.length} إجمالي، ${tasks.filter(t=>t.done).length} مكتملة، ${tasks.filter(t=>!t.done&&t.priority==='high').length} عاجلة
+- العقود: ${contracts.length} إجمالي، ${contracts.filter(c=>c.status==='active').length} نشط، ${contracts.filter(c=>c.status==='seasonal').length} موسمي
+- قيمة العقود: ${contracts.reduce((a,c)=>a+c.value,0).toLocaleString()} ج
+- الدخل: ${inc.toLocaleString()} ج، المصاريف: ${exp.toLocaleString()} ج، الصافي: ${(inc-exp).toLocaleString()} ج
+- التنبيهات: ${getAlerts().map(a=>a.msg).join(' | ')||'لا تنبيهات'}
+أجب بالعربية بشكل مختصر وعملي مع توصيات واضحة.`;
+}
+window.sendAI=async function(){const input=document.getElementById('ai-input');const msg=input.value.trim();if(!msg)return;input.value='';await askAI(msg);}
+window.askAI=async function(msg){
+  const msgsEl=document.getElementById('ai-msgs');
+  const btn=document.getElementById('ai-send-btn');
+  msgsEl.innerHTML+=`<div class="ai-msg-user">${msg}</div>`;
+  msgsEl.innerHTML+=`<div class="ai-msg-bot" id="ai-typing"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  msgsEl.scrollTop=msgsEl.scrollHeight;btn.disabled=true;
+  aiHistory.push({role:'user',content:msg});
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:buildContext(),messages:aiHistory})});
+    const data=await resp.json();
+    const reply=data.content?data.content.map(i=>i.text||'').join('\n'):'عذراً، حدث خطأ.';
+    aiHistory.push({role:'assistant',content:reply});
+    document.getElementById('ai-typing').outerHTML=`<div class="ai-msg-bot">${reply.replace(/\n/g,'<br>')}</div>`;
+  }catch(e){document.getElementById('ai-typing').outerHTML=`<div class="ai-msg-bot">⚠️ تعذر الاتصال بالمساعد.</div>`;}
+  msgsEl.scrollTop=msgsEl.scrollHeight;btn.disabled=false;
+}
+</script>
+</body>
+</html>
