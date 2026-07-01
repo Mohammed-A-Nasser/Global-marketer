@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Global Marketer v4.8</title>
+    <title>Global Marketer v4.9</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer>
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer>
@@ -608,6 +608,9 @@
             color: var(--teal);
             background: var(--bg);
         }
+        .nav-btn.hidden {
+            display: none !important;
+        }
 
         /* ============================================================
                PAGES
@@ -873,6 +876,7 @@
             margin-bottom: 6px;
             background: var(--input-bg);
             transition: all 0.2s;
+            flex-wrap: wrap;
         }
         .item:hover {
             border-color: var(--accent);
@@ -1989,6 +1993,20 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
+
+        /* ============================================================
+               DATALIST STYLING (optional)
+               ============================================================ */
+        input[list]::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+        }
+        input[list] {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%236B8BAA" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-repeat: no-repeat;
+            background-position: left 10px center;
+            background-size: 12px;
+            padding-left: 32px;
+        }
     </style>
 </head>
 <body>
@@ -2031,7 +2049,7 @@
 
             <div class="login-footer">
                 <span>🔒 اتصال آمن</span>
-                <span>🌐 v4.8</span>
+                <span>🌐 v4.9</span>
             </div>
         </div>
     </div>
@@ -2083,7 +2101,7 @@
         </div>
 
         <!-- NAV -->
-        <nav class="nav-bar">
+        <nav class="nav-bar" id="main-nav">
             <button class="nav-btn active" onclick="goTo('dashboard',this)">🏠 الرئيسية</button>
             <button class="nav-btn" onclick="goTo('clients',this)">👥 العملاء</button>
             <button class="nav-btn" onclick="goTo('visits',this)">🏥 الزيارات</button>
@@ -2123,14 +2141,17 @@
         <!-- ===== CLIENTS ===== -->
         <div class="page" id="clients">
             <div class="card">
-                <div class="card-hd"><div class="ico ico-b">👤</div>إضافة عميل</div>
-                <div class="row"><div><label>الاسم</label><input id="cl-n" placeholder="د. أحمد / مستشفى النيل..."></div><div><label>النوع</label><select id="cl-t"><option>طبيب</option><option>مستشفى</option><option>مختبر</option><option>صيدلية</option><option>عيادة</option><option>شركة</option></select></div></div>
+                <div class="card-hd"><div class="ico ico-b">👤</div><span id="client-form-title">إضافة عميل</span></div>
+                <div class="row"><div><label>الاسم</label><input id="cl-n" placeholder="د. أحمد / مستشفى النيل..." list="client-name-suggestions"></div><div><label>النوع</label><select id="cl-t"><option>طبيب</option><option>مستشفى</option><option>مختبر</option><option>صيدلية</option><option>عيادة</option><option>شركة</option></select></div></div>
                 <div class="row"><div><label>الهاتف / واتساب</label><input id="cl-ph" type="tel" placeholder="01xxxxxxxxx"></div><div><label>البريد الإلكتروني</label><input id="cl-email" type="email" placeholder="example@mail.com"></div></div>
                 <div class="row"><div><label>نوع الشغل</label><select id="cl-srv"></select></div><div><label>نوع المقابل</label><select id="cl-fee"></select></div></div>
                 <div class="row"><div><label>التخصص الطبي</label><select id="cl-spec"><option>عام</option><option>باطنة</option><option>جراحة</option><option>نساء وتوليد</option><option>أطفال</option><option>عظام</option><option>عيون</option><option>أنف وأذن وحنجرة</option><option>قلب</option><option>أمراض جلدية</option><option>مختبرات</option><option>أشعة</option><option>أسنان</option><option>نفسية وعصبية</option><option>أخرى</option></select></div><div></div></div>
                 <div class="row"><div><label>المحافظة</label><select id="cl-gov"><option>شمال سيناء</option><option>جنوب سيناء</option><option>الإسماعيلية</option><option>بورسعيد</option><option>السويس</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option><option>الغربية</option><option>المنوفية</option><option>القليوبية</option><option>الشرقية</option><option>كفر الشيخ</option><option>البحيرة</option><option>دمياط</option><option>المنيا</option><option>بني سويف</option><option>الفيوم</option><option>أسيوط</option><option>سوهاج</option><option>قنا</option><option>الأقصر</option><option>أسوان</option><option>البحر الأحمر</option><option>مطروح</option><option>الوادي الجديد</option><option>أخرى</option></select></div><div><label>المدينة / المنطقة</label><input id="cl-ar" placeholder="العريش، الشيخ زايد..."></div></div>
                 <label>ملاحظات</label><textarea id="cl-no" placeholder="احتياجات، ملاحظات..."></textarea>
-                <button class="btn btn-p" onclick="addClient()">➕ إضافة</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="client-submit-btn" onclick="submitClient()">➕ إضافة</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('clients')" id="client-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
             <div class="sec-hd"><div class="sec-title">العملاء</div><div class="sec-sub" id="cl-sum"></div></div>
             <div class="filter-row">
@@ -2147,15 +2168,18 @@
         <div class="page" id="visits">
             <div class="stats-row" style="grid-template-columns:repeat(3,1fr)" id="v-stats-row"></div>
             <div class="card">
-                <div class="card-hd"><div class="ico ico-b">🏥</div>تسجيل زيارة ميدانية</div>
+                <div class="card-hd"><div class="ico ico-b">🏥</div><span id="visit-form-title">تسجيل زيارة ميدانية</span></div>
                 <div class="row"><div><label>العميل</label><select id="v-cl"></select></div><div><label>نوع الزيارة</label><select id="v-type"></select></div></div>
-                <div class="row"><div><label>اسم / عنوان الزيارة</label><input id="v-title" placeholder="زيارة متابعة عقد / عرض منتج جديد..."></div><div><label>التخصص الطبي</label><select id="v-spec"><option>عام</option><option>باطنة</option><option>جراحة</option><option>نساء وتوليد</option><option>أطفال</option><option>عظام</option><option>عيون</option><option>أنف وأذن وحنجرة</option><option>قلب</option><option>أمراض جلدية</option><option>مختبرات</option><option>أشعة</option><option>أسنان</option><option>نفسية وعصبية</option><option>أخرى</option></select></div></div>
-                <div class="row"><div><label>التاريخ</label><input type="date" id="v-date"></div><div><label>الحالة</label><select id="v-stat"><option value="done">✅ تمت</option><option value="planned">📅 مخططة</option><option value="cancelled">❌ ملغاة</option></select></div></div>
+                <div class="row"><div><label>اسم / عنوان الزيارة</label><input id="v-title" placeholder="زيارة متابعة عقد / عرض منتج جديد..." list="visit-title-suggestions"></div><div><label>التخصص الطبي</label><select id="v-spec"><option>عام</option><option>باطنة</option><option>جراحة</option><option>نساء وتوليد</option><option>أطفال</option><option>عظام</option><option>عيون</option><option>أنف وأذن وحنجرة</option><option>قلب</option><option>أمراض جلدية</option><option>مختبرات</option><option>أشعة</option><option>أسنان</option><option>نفسية وعصبية</option><option>أخرى</option></select></div></div>
+                <div class="row"><div><label>التاريخ</label><input type="date" id="v-date"></div><div><label>الحالة</label><select id="v-stat"></select></div></div>
                 <div class="row"><div><label>المحافظة</label><select id="v-gov"><option>شمال سيناء</option><option>جنوب سيناء</option><option>الإسماعيلية</option><option>بورسعيد</option><option>السويس</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option><option>الغربية</option><option>المنوفية</option><option>القليوبية</option><option>الشرقية</option><option>كفر الشيخ</option><option>البحيرة</option><option>دمياط</option><option>المنيا</option><option>بني سويف</option><option>الفيوم</option><option>أسيوط</option><option>سوهاج</option><option>قنا</option><option>الأقصر</option><option>أسوان</option><option>البحر الأحمر</option><option>مطروح</option><option>الوادي الجديد</option><option>أخرى</option></select></div><div><label>المدينة / المنطقة</label><input id="v-area" placeholder="العريش، الشيخ زايد..."></div></div>
                 <div class="row"><div><label>المدة (دقيقة)</label><input type="number" id="v-dur" placeholder="30"></div><div><label>ربط بعقد</label><select id="v-con"></select></div></div>
                 <label>نتيجة الزيارة</label><textarea id="v-result" placeholder="ما تم إنجازه، ردود الفعل..."></textarea>
                 <label>الخطوة التالية</label><input id="v-next" placeholder="الإجراء المطلوب...">
-                <button class="btn btn-p" onclick="addVisit()">➕ تسجيل</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="visit-submit-btn" onclick="submitVisit()">➕ تسجيل</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('visits')" id="visit-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
             <div class="sec-hd"><div class="sec-title">سجل الزيارات</div><div class="sec-sub" id="v-sum"></div></div>
             <div class="filter-row">
@@ -2171,14 +2195,17 @@
 
         <!-- ===== ACTUAL VISITS ===== -->
         <div class="page" id="actualVisits">
-            <div class="card"><div class="card-hd"><div class="ico ico-b">➕</div>تسجيل زيارة فعلية</div>
+            <div class="card"><div class="card-hd"><div class="ico ico-b">➕</div><span id="av-form-title">تسجيل زيارة فعلية</span></div>
                 <div class="row"><div><label>العميل</label><select id="av-client"></select></div><div><label>نوع الزيارة</label><select id="av-type"><option>دكتور</option><option>مستشفى</option><option>مختبر</option><option>صيدلية</option><option>عيادة</option><option>شركة</option><option>أخرى</option></select></div></div>
-                <div class="row"><div><label>اسم الزيارة / العنوان</label><input id="av-title" placeholder="مثال: زيارة متابعة د. أحمد..."></div><div><label>التاريخ</label><input type="date" id="av-date"></div></div>
+                <div class="row"><div><label>اسم الزيارة / العنوان</label><input id="av-title" placeholder="مثال: زيارة متابعة د. أحمد..." list="visit-title-suggestions"></div><div><label>التاريخ</label><input type="date" id="av-date"></div></div>
                 <div class="row"><div><label>التخصص الطبي</label><select id="av-spec"><option>عام</option><option>باطنة</option><option>جراحة</option><option>نساء وتوليد</option><option>أطفال</option><option>عظام</option><option>عيون</option><option>أنف وأذن وحنجرة</option><option>قلب</option><option>أمراض جلدية</option><option>مختبرات</option><option>أشعة</option><option>أسنان</option><option>نفسية وعصبية</option><option>أخرى</option></select></div><div><label>الحالة</label><select id="av-status"><option value="planned">📅 مخططة</option><option value="waiting">⏳ قيد الانتظار</option><option value="done">✅ منفذة</option><option value="cancelled">❌ ملغاة</option></select></div></div>
                 <div class="row"><div><label>المحافظة</label><select id="av-gov"><option>شمال سيناء</option><option>جنوب سيناء</option><option>الإسماعيلية</option><option>بورسعيد</option><option>السويس</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option><option>الغربية</option><option>المنوفية</option><option>القليوبية</option><option>الشرقية</option><option>كفر الشيخ</option><option>البحيرة</option><option>دمياط</option><option>المنيا</option><option>بني سويف</option><option>الفيوم</option><option>أسيوط</option><option>سوهاج</option><option>قنا</option><option>الأقصر</option><option>أسوان</option><option>البحر الأحمر</option><option>مطروح</option><option>الوادي الجديد</option><option>أخرى</option></select></div><div><label>المدينة / المنطقة</label><input id="av-area" placeholder="العريش، الشيخ زايد..."></div></div>
                 <div class="row"><div><label>المدة (دقيقة)</label><input type="number" id="av-dur" placeholder="30"></div><div><label>ربط بعقد</label><select id="av-contract"></select></div></div>
                 <label>نتيجة الزيارة</label><textarea id="av-result" placeholder="سجل هنا ما تم إنجازه، ملاحظات، ردود فعل..."></textarea>
-                <button class="btn btn-p" onclick="addActualVisit()">💾 حفظ الزيارة الفعلية</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="av-submit-btn" onclick="submitActualVisit()">💾 حفظ الزيارة الفعلية</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('actualvisits')" id="av-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
             <div class="stats-row" style="grid-template-columns:repeat(4,1fr)" id="av-stats-row"></div>
             <div class="card"><div class="card-hd"><div class="ico ico-p">📊</div>تحليل حالات الزيارات الفعلية</div><div id="av-analytics"></div></div>
@@ -2188,42 +2215,47 @@
 
         <!-- ===== TASKS ===== -->
         <div class="page" id="tasks">
-            <div class="card"><div class="card-hd"><div class="ico ico-b">➕</div>إضافة مهمة</div>
+            <div class="card"><div class="card-hd"><div class="ico ico-b">➕</div><span id="task-form-title">إضافة مهمة</span></div>
                 <input id="t-n" placeholder="وصف المهمة...">
                 <div class="row"><div><label>الأولوية</label><select id="t-p"><option value="high">🔴 عالية</option><option value="med" selected>🟡 متوسطة</option><option value="low">🟢 منخفضة</option></select></div><div><label>الموعد</label><input type="date" id="t-d"></div></div>
                 <div class="row"><div><label>ربط بعميل</label><select id="t-cl"></select></div><div><label>التصنيف</label><select id="t-cat"><option>تسويق</option><option>إدارة</option><option>متابعة</option><option>اجتماع</option><option>تقرير</option><option>أخرى</option></select></div></div>
-                <button class="btn btn-p" onclick="addTask()">➕ إضافة</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="task-submit-btn" onclick="submitTask()">➕ إضافة</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('tasks')" id="task-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
             <div class="sec-hd"><div class="sec-title">المهام</div><div class="sec-sub" id="t-sum"></div></div>
             <div class="filter-row"><button class="fbtn on" onclick="fTasks('all',this)">الكل</button><button class="fbtn" onclick="fTasks('pending',this)">⏳ معلقة</button><button class="fbtn" onclick="fTasks('done',this)">✅ مكتملة</button><button class="fbtn" onclick="fTasks('high',this)">🔴 عاجلة</button></div>
             <div id="t-list"></div>
         </div>
 
-        <!-- ===== CONTRACTS (reorganized: Add forms at TOP) ===== -->
+        <!-- ===== CONTRACTS ===== -->
         <div class="page" id="contracts">
-
-            <!-- ===== ADD CONTRACT & DEBT AT TOP (NEW) ===== -->
             <div class="card" style="border:2px solid var(--accent);">
-                <div class="card-hd"><div class="ico ico-gold">📄</div>إضافة عقد جديد</div>
+                <div class="card-hd"><div class="ico ico-gold">📄</div><span id="contract-form-title">إضافة عقد جديد</span></div>
                 <div class="row"><div><label>العميل</label><select id="con-cl"></select></div><div><label>نوع الخدمة</label><select id="con-srv"><option>تسويق طبي</option><option>استشارات مختبرات</option><option>إدارة مختبر</option><option>تدريب طاقم</option><option>خدمات تحليلية</option><option>استشارات إدارية</option><option>أخرى</option></select></div></div>
                 <div class="row"><div><label>القيمة الإجمالية (جنيه)</label><input type="number" id="con-val" placeholder="0"></div><div><label>الحالة</label><select id="con-stat"><option value="active">✅ نشط</option><option value="seasonal">🌙 موسمي</option><option value="pending">⏳ معلق</option><option value="ended">🔴 منتهي</option></select></div></div>
                 <div class="row"><div><label>البداية</label><input type="date" id="con-s"></div><div><label>النهاية</label><input type="date" id="con-e"></div></div>
                 <div class="row"><div><label>طريقة الدفع</label><select id="con-pt"><option value="monthly">شهري</option><option value="quarterly">ربع سنوي</option><option value="once">دفعة واحدة</option></select></div><div><label>عدد الدفعات</label><input type="number" id="con-inst" value="1" min="1"></div></div>
                 <label>ملاحظات</label><textarea id="con-no" placeholder="تفاصيل..."></textarea>
-                <button class="btn btn-p" onclick="addContract()">➕ حفظ العقد</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="contract-submit-btn" onclick="submitContract()">➕ حفظ العقد</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('contracts')" id="contract-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
 
             <div class="card" style="border:2px solid var(--gold);">
-                <div class="card-hd"><div class="ico ico-r">💸</div>إضافة مديونية جديدة</div>
+                <div class="card-hd"><div class="ico ico-r">💸</div><span id="debt-form-title">إضافة مديونية جديدة</span></div>
                 <div class="row"><div><label>العميل</label><select id="debt-cl-top"></select></div><div><label>المبلغ (جنيه)</label><input type="number" id="debt-amt-top" placeholder="0"></div></div>
                 <div class="row"><div><label>تاريخ التحصيل المتوقع</label><input type="date" id="debt-date-top"></div><div><label>ملاحظات</label><input id="debt-note-top" placeholder="وصف مختصر..."></div></div>
-                <button class="btn btn-gold" onclick="addDebtTop()">➕ إضافة مديونية</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-gold" id="debt-submit-btn" onclick="submitDebt()">➕ إضافة مديونية</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('debts')" id="debt-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
 
-            <!-- Stats Row -->
             <div class="stats-row" style="grid-template-columns:repeat(4,1fr)" id="con-stats-row"></div>
 
-            <!-- Advanced Analytics -->
             <div class="row" style="align-items:start;">
                 <div style="flex:1;"><div class="card"><div class="card-hd"><div class="ico ico-p">📊</div>توزيع العقود حسب الحالة</div><div id="con-status-distribution"></div></div></div>
                 <div style="flex:1;"><div class="card"><div class="card-hd"><div class="ico ico-gold">💰</div>تحليل الدفعات</div><div id="con-payment-analysis"></div></div></div>
@@ -2233,7 +2265,6 @@
                 <div style="flex:1;"><div class="card"><div class="card-hd"><div class="ico ico-r">⚠️</div>عقود منتهية قريباً</div><div id="con-expiring-soon"></div></div></div>
             </div>
 
-            <!-- Contract List -->
             <div class="sec-hd"><div class="sec-title">العقود</div><div class="sec-sub" id="con-sum"></div></div>
             <div id="con-list"></div>
         </div>
@@ -2242,12 +2273,15 @@
         <div class="page" id="finance">
             <div class="bal-card"><div class="bal-row"><div class="bal-item"><div class="bal-num" style="color:#1DB954" id="b-in">0</div><div class="bal-lbl">💚 الدخل</div></div><div class="bal-item"><div class="bal-num" style="color:#FF6B7A" id="b-ex">0</div><div class="bal-lbl">🔴 المصاريف</div></div><div class="bal-item"><div class="bal-num" style="color:var(--accent)" id="b-net">0</div><div class="bal-lbl">💰 الصافي</div></div></div></div>
 
-            <div class="card"><div class="card-hd"><div class="ico ico-g">➕</div>إضافة حركة مالية</div>
+            <div class="card"><div class="card-hd"><div class="ico ico-g">➕</div><span id="finance-form-title">إضافة حركة مالية</span></div>
                 <div class="row"><div><label>النوع</label><select id="f-type"><option value="income">💚 دخل / إيراد</option><option value="expense">🔴 مصروف</option></select></div><div><label>المبلغ (جنيه)</label><input type="number" id="f-amt" placeholder="0"></div></div>
                 <div class="row"><div><label>التصنيف</label><select id="f-cat"></select></div><div><label>التاريخ</label><input type="date" id="f-date"></div></div>
                 <div class="row"><div><label>ربط بعميل</label><select id="f-cl"></select></div><div><label>ربط بعقد</label><select id="f-con"></select></div></div>
                 <label>ملاحظة</label><input id="f-note" placeholder="وصف مختصر...">
-                <button class="btn btn-p" onclick="addFinance()">➕ إضافة</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="finance-submit-btn" onclick="submitFinance()">➕ إضافة</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('finances')" id="finance-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
 
             <div class="filter-row"><button class="fbtn on" onclick="fFin('all',this)">الكل</button><button class="fbtn" onclick="fFin('income',this)">💚 دخل</button><button class="fbtn" onclick="fFin('expense',this)">🔴 مصروف</button></div>
@@ -2271,7 +2305,7 @@
             </div>
 
             <div class="card rep-form" id="rf-mr">
-                <div class="card-hd"><div class="ico ico-p">📝</div>تقرير شهري جديد</div>
+                <div class="card-hd"><div class="ico ico-p">📝</div><span id="mr-form-title">تقرير شهري جديد</span></div>
                 <div class="row"><div><label>العميل / الجهة</label><select id="mr-cl"></select></div><div><label>الشهر</label><input type="month" id="mr-month"></div></div>
                 <label>ربط الهدف بعميل محدد</label><select id="target-client-select"></select>
                 <label>ماذا طلب العميل؟</label><textarea id="target-client-reqs" placeholder="اكتب هنا تفاصيل ما يطلبه العميل لربطه بالهدف الشهري..."></textarea>
@@ -2280,36 +2314,48 @@
                 <label>الفرص والاقتراحات</label><textarea id="mr-opp" placeholder="فرص للتحسين..."></textarea>
                 <label>أهداف الشهر القادم</label><textarea id="mr-goals" placeholder="الخطة والأهداف..."></textarea>
                 <div class="row"><div><label>التقييم (1-10)</label><input type="number" id="mr-score" min="1" max="10" placeholder="7"></div><div><label>ملاحظات إضافية</label><input id="mr-notes" placeholder="..."></div></div>
-                <button class="btn btn-p" onclick="addMonthlyReport()">💾 حفظ</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="mr-submit-btn" onclick="submitMonthlyReport()">💾 حفظ</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('monthlyReports')" id="mr-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
 
             <div class="card rep-form" id="rf-media" style="display:none">
-                <div class="card-hd"><div class="ico ico-b">📱</div>تقرير ميديا وتسويق رقمي جديد</div>
+                <div class="card-hd"><div class="ico ico-b">📱</div><span id="media-form-title">تقرير ميديا وتسويق رقمي جديد</span></div>
                 <div class="row"><div><label>العميل / الجهة (اختياري)</label><select id="sr-media-cl"></select></div><div><label>المنصة</label><input id="sr-media-platform" placeholder="فيسبوك / انستجرام..."></div></div>
                 <label>المطلوب إعداده ونشره</label><textarea id="sr-media-required" placeholder="..."></textarea>
                 <label>الأهداف الموضوعة</label><textarea id="sr-media-goals" placeholder="..."></textarea>
                 <div class="row"><div><label>معدل نمو المتابعين</label><input id="sr-media-growth" placeholder="مثال: +12%"></div><div><label>إجمالي التفاعل</label><input id="sr-media-likes" placeholder="مثال: 3500 تفاعل"></div></div>
                 <label>الخلاصة والنتائج النهائية</label><textarea id="sr-media-results" placeholder="..."></textarea>
-                <button class="btn btn-p" onclick="addSpecialReport('media')">💾 حفظ</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="media-submit-btn" onclick="submitSpecialReport('media')">💾 حفظ</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('specialReports')" id="media-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
 
             <div class="card rep-form" id="rf-meeting" style="display:none">
-                <div class="card-hd"><div class="ico ico-gold">🤝</div>تقرير اجتماع جديد</div>
+                <div class="card-hd"><div class="ico ico-gold">🤝</div><span id="meeting-form-title">تقرير اجتماع جديد</span></div>
                 <div class="row"><div><label>العميل / الجهة (اختياري)</label><select id="sr-meeting-cl"></select></div><div><label>موضوع الاجتماع</label><input id="sr-meeting-title" placeholder="..."></div></div>
                 <label>البنود والمحاور التي تمت مناقشتها</label><textarea id="sr-meeting-points" placeholder="بند أول...&#10;بند ثاني..."></textarea>
                 <label>القرارات والتوصيات</label><textarea id="sr-meeting-decisions" placeholder="..."></textarea>
-                <button class="btn btn-p" onclick="addSpecialReport('meeting')">💾 حفظ</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="meeting-submit-btn" onclick="submitSpecialReport('meeting')">💾 حفظ</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('specialReports')" id="meeting-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
 
             <div class="card rep-form" id="rf-consult" style="display:none">
-                <div class="card-hd"><div class="ico ico-p">💡</div>تقرير استشارة جديد</div>
+                <div class="card-hd"><div class="ico ico-p">💡</div><span id="consult-form-title">تقرير استشارة جديد</span></div>
                 <div class="row"><div><label>العميل / الجهة (اختياري)</label><select id="sr-consult-cl"></select></div><div><label>بند الاستشارة</label><input id="sr-consult-title" placeholder="..."></div></div>
                 <label>التشخيص والوضع الحالي</label><textarea id="sr-consult-details" placeholder="..."></textarea>
                 <label>النتائج المرجوة وخطة التحرك الموصى بها</label><textarea id="sr-consult-results" placeholder="..."></textarea>
-                <button class="btn btn-p" onclick="addSpecialReport('consult')">💾 حفظ</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-p" id="consult-submit-btn" onclick="submitSpecialReport('consult')">💾 حفظ</button>
+                    <button class="btn btn-ghost" onclick="cancelEdit('specialReports')" id="consult-cancel-btn" style="display:none;">✖️ إلغاء التعديل</button>
+                </div>
             </div>
 
-            <!-- ACTUAL VISITS REPORT (with doctor frequency) -->
+            <!-- ACTUAL VISITS REPORT -->
             <div class="card rep-form" id="rf-actualVisits" style="display:none">
                 <div class="card-hd"><div class="ico ico-gold">📋</div>تقرير شهري للزيارات الفعلية — مع تكرار الأسماء</div>
                 <div class="row"><div><label>الشهر</label><input type="month" id="av-report-month"></div><div><label>العميل (اختياري - الكل)</label><select id="av-report-client"></select></div></div>
@@ -2342,7 +2388,6 @@
                 <button class="btn btn-p" onclick="generatePlanReport()" style="margin-top:10px;">📄 توليد التقرير (PDF)</button>
             </div>
 
-            <!-- COMPANY MONTHLY REPORT -->
             <div class="card rep-form" id="rf-companyReport" style="display:none">
                 <div class="card-hd"><div class="ico ico-gold">🏢</div>تقرير الشركة الشامل — شهر كامل</div>
                 <div class="row">
@@ -2442,13 +2487,10 @@
 
         <!-- ===== ANALYTICS (Enhanced) ===== -->
         <div class="page" id="analytics">
-            <!-- Enhanced stats row -->
             <div class="stats-row" id="ana-stats"></div>
 
-            <!-- New trend grid -->
             <div class="ana-trend-grid" id="ana-trend-grid"></div>
 
-            <!-- Conversion & averages -->
             <div class="row" style="align-items:start;margin-bottom:14px">
                 <div class="conv-stat"><div class="conv-num" id="conv-rate">0%</div><div class="conv-lbl">نسبة تحويل الزيارات لعقود</div></div>
                 <div class="conv-stat" style="background:linear-gradient(135deg,#1a5c3a,#0D7EA8)"><div class="conv-num" style="color:#52E88A" id="avg-visit-time">0</div><div class="conv-lbl">متوسط مدة الزيارة (دقيقة)</div></div>
@@ -2469,7 +2511,6 @@
                 </div>
             </div>
 
-            <!-- GOALS SECTION -->
             <div class="card">
                 <div class="card-hd"><div class="ico ico-b">🎯</div>الأهداف — رؤية الشركة</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
@@ -2525,7 +2566,7 @@
                     <button class="ai-chip" onclick="askAI('أعطِ ملخصاً عن حالة الأهداف')">🎯 الأهداف</button>
                 </div>
                 <div class="ai-msgs" id="ai-msgs">
-                    <div class="ai-msg-bot">مرحباً! أنا مساعدك الذكي في Global Marketer 🌐<br>أستطيع تحليل بياناتك وتقديم رؤى مفيدة. اسألني!</div>
+                    <div class="ai-msg-bot">مرحباً! أنا مساعدك الذكي في Global Marketer v4.9 🌐<br>أستطيع تحليل بياناتك وتقديم رؤى مفيدة. اسألني!</div>
                 </div>
                 <div class="ai-input-row">
                     <input class="ai-input" id="ai-input" placeholder="اسأل عن بياناتك..." onkeydown="if(event.key==='Enter')sendAI()">
@@ -2537,7 +2578,7 @@
             </div>
         </div>
 
-        <!-- ===== SETTINGS (with dynamic lookups) ===== -->
+        <!-- ===== SETTINGS ===== -->
         <div class="page" id="settings">
             <div class="card"><div class="card-hd"><div class="ico ico-b">✍️</div>توقيعي في التقارير</div>
                 <div style="font-size:0.74rem;color:var(--muted);margin-bottom:10px">الاسم واللقب هنا هيظهروا تلقائي في توقيع كل تقرير PDF.</div>
@@ -2571,12 +2612,11 @@
                 <div style="font-size:0.7rem;color:var(--muted);margin-top:8px;">هذه الإعدادات تؤثر على جميع تقارير PDF الصادرة من النظام.</div>
             </div>
 
-            <!-- ===== DYNAMIC LOOKUPS (NEW) ===== -->
+            <!-- Dynamic Lookups -->
             <div class="card" style="border:2px solid var(--accent);">
                 <div class="card-hd"><div class="ico ico-gold">📋</div>إدارة القوائم الديناميكية — أضف أنواعاً جديدة</div>
                 <div style="font-size:0.74rem;color:var(--muted);margin-bottom:12px;">أضف أو احذف قيماً للقوائم المنسدلة في النظام (أنواع الزيارات، أنواع المقابل، تصنيفات المالية، أنواع الخدمات)</div>
 
-                <!-- Visit Types -->
                 <div style="margin-bottom:14px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                         <label style="font-size:0.75rem;font-weight:700;color:var(--teal);text-transform:none;">🏷️ أنواع الزيارات</label>
@@ -2588,7 +2628,6 @@
                     <div id="lookup-visitTypes" class="lookup-list"></div>
                 </div>
 
-                <!-- Payment Types -->
                 <div style="margin-bottom:14px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                         <label style="font-size:0.75rem;font-weight:700;color:var(--gold);text-transform:none;">💰 أنواع المقابل</label>
@@ -2600,7 +2639,6 @@
                     <div id="lookup-paymentTypes" class="lookup-list"></div>
                 </div>
 
-                <!-- Finance Categories -->
                 <div style="margin-bottom:14px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                         <label style="font-size:0.75rem;font-weight:700;color:var(--purple);text-transform:none;">📊 تصنيفات المالية</label>
@@ -2612,7 +2650,6 @@
                     <div id="lookup-financeCategories" class="lookup-list"></div>
                 </div>
 
-                <!-- Service Types -->
                 <div style="margin-bottom:14px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                         <label style="font-size:0.75rem;font-weight:700;color:var(--green);text-transform:none;">🛠️ أنواع الخدمات (للعملاء)</label>
@@ -2624,7 +2661,6 @@
                     <div id="lookup-serviceTypes" class="lookup-list"></div>
                 </div>
 
-                <!-- Visit Statuses (done, planned, cancelled + custom) -->
                 <div style="margin-bottom:6px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                         <label style="font-size:0.75rem;font-weight:700;color:var(--red);text-transform:none;">📌 حالات الزيارة</label>
@@ -2694,7 +2730,7 @@
         <!-- ===== AUDIT ===== -->
         <div class="page" id="audit">
             <div class="card"><div class="card-hd"><div class="ico ico-r">🕵️</div>سجل العمليات (متاح للمدير فقط)</div>
-                <div style="font-size:0.74rem;color:var(--muted);margin-bottom:10px">توثيق تلقائي لكل عمليات الإضافة والحذف في النظام مع اسم المستخدم والتوقيت.</div>
+                <div style="font-size:0.74rem;color:var(--muted);margin-bottom:10px">توثيق تلقائي لكل عمليات الإضافة والحذف والتعديل في النظام مع اسم المستخدم والتوقيت.</div>
             </div>
             <div id="audit-list"></div>
         </div>
@@ -2722,7 +2758,7 @@
             <div class="card" style="background:#FFF4E6;border-color:#FFE0B2;margin-top:14px">
                 <div class="card-hd"><div class="ico" style="background:#FFF4E6;color:var(--yellow)">ℹ️</div>الصلاحيات</div>
                 <div style="font-size:0.78rem;line-height:2.2">
-                    <div>👑 <strong>مدير</strong> — كل الصلاحيات + إضافة مستخدمين + حذف</div>
+                    <div>👑 <strong>مدير</strong> — كل الصلاحيات + إضافة مستخدمين + حذف + تعديل</div>
                     <div>👷 <strong>موظف</strong> — صلاحياته حسب الإعدادات أعلاه (لكل وحدة على حدة)</div>
                     <div>👁️ <strong>مشاهد</strong> — يشوف البيانات بس بدون أي تعديل</div>
                 </div>
@@ -2786,6 +2822,13 @@
         const today = new Date();
         const todayStr = today.toISOString().split('T')[0];
         const curMonth = today.toISOString().slice(0, 7);
+
+        // ===== EDITING STATE =====
+        let editingState = {
+            collection: null,
+            id: null,
+            module: null
+        };
 
         // ===== LOOKUPS =====
         let lookups = {
@@ -2870,6 +2913,8 @@
         function canDeleteModule(m) { return hasPermission(m, 'delete'); }
 
         function canReadModule(m) { return hasPermission(m, 'read'); }
+
+        function canEdit(m) { return currentRole === 'admin'; } // only admin can edit
 
         // ===== AUTH =====
         window.doLogin = async function() {
@@ -2964,6 +3009,7 @@
                 loadGoalsFromStorage();
                 renderGoals();
                 loadLookupsFromDB();
+                updateNavbarPermissions();
             } else {
                 currentUser = null;
                 currentRole = null;
@@ -3004,6 +3050,8 @@
             renderGoals();
             loadLookupsFromDB();
             renderLookups();
+            updateNavbarPermissions();
+            populateDatalists();
         }
 
         function setupListeners() {
@@ -3031,6 +3079,7 @@
                     updateTickerData();
                     renderDashKPI();
                     renderDashActivity();
+                    populateDatalists();
                 }, (err) => setSyncStatus('offline'));
                 unsubscribers.push(unsub);
             });
@@ -3098,6 +3147,62 @@
             }, 300);
         };
 
+        // ===== NAVBAR PERMISSIONS =====
+        function updateNavbarPermissions() {
+            const navBtns = document.querySelectorAll('#main-nav .nav-btn');
+            const moduleMap = {
+                'clients': 'clients',
+                'visits': 'visits',
+                'actualVisits': 'actualvisits',
+                'tasks': 'tasks',
+                'contracts': 'contracts',
+                'finance': 'finance',
+                'monthly': 'reports',
+                'reportsCompare': 'reports',
+                'analytics': 'reports',
+                'ai': 'reports',
+                'settings': 'settings',
+                'users': 'users',
+                'audit': 'audit'
+            };
+            navBtns.forEach(btn => {
+                const id = btn.getAttribute('onclick')?.match(/goTo\('([^']+)'/)?.[1];
+                if (!id) return;
+                if (id === 'dashboard') { btn.classList.remove('hidden'); return; }
+                const module = moduleMap[id];
+                if (!module) { btn.classList.remove('hidden'); return; }
+                if (currentRole === 'admin') {
+                    btn.classList.remove('hidden');
+                } else {
+                    const hasRead = hasPermission(module, 'read');
+                    btn.classList.toggle('hidden', !hasRead);
+                }
+            });
+        }
+
+        // ===== DATALISTS (Auto-suggest) =====
+        function populateDatalists() {
+            // Client names
+            const clientNames = clients.map(c => c.name).filter(Boolean);
+            const clientDatalist = document.getElementById('client-name-suggestions') || (() => {
+                const dl = document.createElement('datalist');
+                dl.id = 'client-name-suggestions';
+                document.body.appendChild(dl);
+                return dl;
+            })();
+            clientDatalist.innerHTML = clientNames.map(n => `<option value="${n}">`).join('');
+
+            // Visit titles
+            const visitTitles = visits.map(v => v.title).filter(Boolean);
+            const visitDatalist = document.getElementById('visit-title-suggestions') || (() => {
+                const dl = document.createElement('datalist');
+                dl.id = 'visit-title-suggestions';
+                document.body.appendChild(dl);
+                return dl;
+            })();
+            visitDatalist.innerHTML = visitTitles.map(n => `<option value="${n}">`).join('');
+        }
+
         // ===== FILL SELECTS =====
         function fillSelects() {
             const opts = '<option value="">— بدون ربط —</option>' + clients.map(c =>
@@ -3105,27 +3210,22 @@
             const reqOpts = '<option value="">— اختر عميل —</option>' + clients.map(c =>
                 `<option value="${c.id}">${tIcon(c.type)} ${c.name}</option>`).join('');
 
-            // Visit types dropdown
             const visitTypeOpts = lookups.visitTypes.map(t => `<option value="${t}">${t}</option>`).join('');
             const vTypeEl = document.getElementById('v-type');
             if (vTypeEl) vTypeEl.innerHTML = visitTypeOpts;
 
-            // Payment types
             const payOpts = lookups.paymentTypes.map(t => `<option value="${t}">${t}</option>`).join('');
             const payEl = document.getElementById('cl-fee');
             if (payEl) payEl.innerHTML = payOpts;
 
-            // Finance categories
             const catOpts = lookups.financeCategories.map(t => `<option value="${t}">${t}</option>`).join('');
             const catEl = document.getElementById('f-cat');
             if (catEl) catEl.innerHTML = catOpts;
 
-            // Service types
             const srvOpts = lookups.serviceTypes.map(t => `<option value="${t}">${t}</option>`).join('');
             const srvEl = document.getElementById('cl-srv');
             if (srvEl) srvEl.innerHTML = srvOpts;
 
-            // Visit statuses (for the status dropdown in visits)
             const statusOpts = lookups.visitStatuses.map(t => {
                 const label = t === 'done' ? '✅ تمت' : t === 'planned' ? '📅 مخططة' : t === 'cancelled' ?
                     '❌ ملغاة' : t;
@@ -3171,7 +3271,6 @@
                     renderLookups();
                     fillSelects();
                 } else {
-                    // Save defaults
                     await setDoc(doc(db, 'systemSettings', 'lookups'), lookups);
                 }
             } catch (e) {
@@ -3616,43 +3715,484 @@
             return alerts;
         }
 
-        // ===== CLIENTS =====
-        window.addClient = async function() {
-            if (!canWriteModule('clients')) { showToast('⛔ ليس لديك صلاحية الكتابة في العملاء', 'error'); return; }
+        // ===== EDITING HELPERS =====
+        function startEdit(collection, id, module) {
+            if (!canEdit(module)) { showToast('⛔ ليس لديك صلاحية التعديل', 'error'); return; }
+            editingState.collection = collection;
+            editingState.id = id;
+            editingState.module = module;
+
+            let item;
+            if (collection === 'clients') item = clients.find(c => c.id == id);
+            else if (collection === 'visits') item = visits.find(v => v.id == id);
+            else if (collection === 'tasks') item = tasks.find(t => t.id == id);
+            else if (collection === 'contracts') item = contracts.find(c => c.id == id);
+            else if (collection === 'finances') item = finances.find(f => f.id == id);
+            else if (collection === 'monthlyReports') item = monthlyReports.find(r => r.id == id);
+            else if (collection === 'debts') item = debts.find(d => d.id == id);
+            else if (collection === 'specialReports') item = specialReports.find(r => r.id == id);
+            else if (collection === 'actualvisits') item = actualVisits.find(v => v.id == id);
+            if (!item) { showToast('❌ العنصر غير موجود', 'error'); return; }
+
+            populateForm(collection, item);
+            showToast(`✏️ جاري تعديل ${item.name || item.clientName || item.title || 'العنصر'}`, 'info');
+        }
+
+        function populateForm(collection, item) {
+            // Show cancel button, change submit button text
+            const cancelBtn = document.getElementById(collection + '-cancel-btn');
+            const submitBtn = document.getElementById(collection + '-submit-btn');
+            if (cancelBtn) cancelBtn.style.display = 'inline-block';
+            if (submitBtn) submitBtn.textContent = '💾 تحديث';
+
+            const titleEl = document.getElementById(collection + '-form-title');
+            if (titleEl) titleEl.textContent = 'تعديل ' + (item.name || item.clientName || item.title || 'العنصر');
+
+            // Populate fields based on collection
+            switch (collection) {
+                case 'clients':
+                    document.getElementById('cl-n').value = item.name || '';
+                    document.getElementById('cl-t').value = item.type || 'طبيب';
+                    document.getElementById('cl-ph').value = item.phone || '';
+                    document.getElementById('cl-email').value = item.email || '';
+                    document.getElementById('cl-srv').value = item.serviceType || '';
+                    document.getElementById('cl-fee').value = item.feeType || '';
+                    document.getElementById('cl-spec').value = item.specialization || 'عام';
+                    document.getElementById('cl-gov').value = item.governorate || 'شمال سيناء';
+                    document.getElementById('cl-ar').value = item.area || '';
+                    document.getElementById('cl-no').value = item.notes || '';
+                    break;
+                case 'visits':
+                    document.getElementById('v-cl').value = item.clientId || '';
+                    document.getElementById('v-title').value = item.title || '';
+                    document.getElementById('v-spec').value = item.specialization || 'عام';
+                    document.getElementById('v-type').value = item.type || '';
+                    document.getElementById('v-date').value = item.date || '';
+                    document.getElementById('v-stat').value = item.status || 'planned';
+                    document.getElementById('v-gov').value = item.governorate || 'شمال سيناء';
+                    document.getElementById('v-area').value = item.area || '';
+                    document.getElementById('v-dur').value = item.duration || '';
+                    document.getElementById('v-con').value = item.contractId || '';
+                    document.getElementById('v-result').value = item.result || '';
+                    document.getElementById('v-next').value = item.nextStep || '';
+                    break;
+                case 'tasks':
+                    document.getElementById('t-n').value = item.name || '';
+                    document.getElementById('t-p').value = item.priority || 'med';
+                    document.getElementById('t-d').value = item.date || '';
+                    document.getElementById('t-cl').value = item.clientId || '';
+                    document.getElementById('t-cat').value = item.category || '';
+                    break;
+                case 'contracts':
+                    document.getElementById('con-cl').value = item.clientId || '';
+                    document.getElementById('con-srv').value = item.service || '';
+                    document.getElementById('con-val').value = item.value || '';
+                    document.getElementById('con-stat').value = item.status || 'active';
+                    document.getElementById('con-s').value = item.start || '';
+                    document.getElementById('con-e').value = item.end || '';
+                    document.getElementById('con-pt').value = item.payType || 'monthly';
+                    document.getElementById('con-inst').value = item.installments || 1;
+                    document.getElementById('con-no').value = item.notes || '';
+                    break;
+                case 'finances':
+                    document.getElementById('f-type').value = item.type || 'income';
+                    document.getElementById('f-amt').value = item.amount || '';
+                    document.getElementById('f-cat').value = item.category || '';
+                    document.getElementById('f-date').value = item.date || '';
+                    document.getElementById('f-cl').value = item.clientId || '';
+                    document.getElementById('f-con').value = item.contractId || '';
+                    document.getElementById('f-note').value = item.note || '';
+                    break;
+                case 'monthlyReports':
+                    document.getElementById('mr-cl').value = item.clientId || '';
+                    document.getElementById('mr-month').value = item.month || '';
+                    document.getElementById('mr-pos').value = item.positives || '';
+                    document.getElementById('mr-neg').value = item.negatives || '';
+                    document.getElementById('mr-opp').value = item.opportunities || '';
+                    document.getElementById('mr-goals').value = item.goals || '';
+                    document.getElementById('mr-score').value = item.score || '';
+                    document.getElementById('mr-notes').value = item.notes || '';
+                    break;
+                case 'debts':
+                    document.getElementById('debt-cl-top').value = item.clientId || '';
+                    document.getElementById('debt-amt-top').value = item.amount || '';
+                    document.getElementById('debt-date-top').value = item.expectedDate || '';
+                    document.getElementById('debt-note-top').value = item.note || '';
+                    break;
+                case 'specialReports':
+                    // handled per kind in submit
+                    break;
+                case 'actualvisits':
+                    document.getElementById('av-client').value = item.clientId || '';
+                    document.getElementById('av-type').value = item.type || '';
+                    document.getElementById('av-title').value = item.title || '';
+                    document.getElementById('av-date').value = item.date || '';
+                    document.getElementById('av-spec').value = item.specialization || 'عام';
+                    document.getElementById('av-status').value = item.status || 'planned';
+                    document.getElementById('av-gov').value = item.governorate || 'شمال سيناء';
+                    document.getElementById('av-area').value = item.area || '';
+                    document.getElementById('av-dur').value = item.duration || '';
+                    document.getElementById('av-contract').value = item.contractId || '';
+                    document.getElementById('av-result').value = item.result || '';
+                    break;
+                default:
+                    showToast('⚠️ لا يمكن تعديل هذا العنصر', 'warning');
+            }
+        }
+
+        function cancelEdit(collection) {
+            editingState.collection = null;
+            editingState.id = null;
+            editingState.module = null;
+            const cancelBtn = document.getElementById(collection + '-cancel-btn');
+            const submitBtn = document.getElementById(collection + '-submit-btn');
+            if (cancelBtn) cancelBtn.style.display = 'none';
+            if (submitBtn) submitBtn.textContent = collection === 'clients' ? '➕ إضافة' :
+                collection === 'visits' ? '➕ تسجيل' :
+                collection === 'tasks' ? '➕ إضافة' :
+                collection === 'contracts' ? '➕ حفظ العقد' :
+                collection === 'finances' ? '➕ إضافة' :
+                collection === 'monthlyReports' ? '💾 حفظ' :
+                collection === 'debts' ? '➕ إضافة مديونية' :
+                collection === 'specialReports' ? '💾 حفظ' :
+                collection === 'actualvisits' ? '💾 حفظ الزيارة الفعلية' : '➕ إضافة';
+            const titleEl = document.getElementById(collection + '-form-title');
+            if (titleEl) {
+                const titles = {
+                    clients: 'إضافة عميل',
+                    visits: 'تسجيل زيارة ميدانية',
+                    tasks: 'إضافة مهمة',
+                    contracts: 'إضافة عقد جديد',
+                    finances: 'إضافة حركة مالية',
+                    monthlyReports: 'تقرير شهري جديد',
+                    debts: 'إضافة مديونية جديدة',
+                    specialReports: 'تقرير جديد',
+                    actualvisits: 'تسجيل زيارة فعليه'
+                };
+                titleEl.textContent = titles[collection] || 'إضافة';
+            }
+            // Clear forms (optional, but better to keep UX)
+            // We'll keep the data for user to clear manually or we can clear specific fields.
+            showToast('✖️ تم إلغاء التعديل', 'info');
+        }
+
+        // ===== SUBMIT FUNCTIONS (handle add/update) =====
+        async function submitDocument(collection, data, module, successMsg) {
+            if (!canWriteModule(module) && !canEdit(module)) {
+                showToast('⛔ ليس لديك صلاحية الكتابة', 'error');
+                return;
+            }
+            if (editingState.collection === collection && editingState.id) {
+                // UPDATE
+                try {
+                    await updateDoc(doc(db, collection, editingState.id), data);
+                    showToast(`✅ تم تحديث ${successMsg}`, 'success');
+                    logOp('تعديل', `تعديل ${successMsg} (${editingState.id})`);
+                    addNotification(`✏️ تم تعديل ${successMsg}`, 'info');
+                    cancelEdit(collection);
+                } catch (e) {
+                    showToast('❌ فشل التحديث: ' + e.message, 'error');
+                }
+            } else {
+                // ADD
+                try {
+                    await addDoc(collection(db, collection), { ...data, created: todayStr, createdBy: currentUser
+                            .uid });
+                    showToast(`✅ تم إضافة ${successMsg}`, 'success');
+                    logOp('إضافة', `أضاف ${successMsg}`);
+                    addNotification(`➕ تم إضافة ${successMsg}`, 'success');
+                } catch (e) {
+                    showToast('❌ فشل الإضافة: ' + e.message, 'error');
+                }
+            }
+        }
+
+        // ===== WRAPPER SUBMIT FUNCTIONS =====
+        window.submitClient = async function() {
             const n = document.getElementById('cl-n').value.trim();
             if (!n) { showToast('⚠️ أدخل اسم العميل', 'warning'); return; }
-            setSyncStatus('syncing');
-            try {
-                await addDoc(collection(db, 'clients'), {
-                    name: n,
-                    type: document.getElementById('cl-t').value,
-                    phone: document.getElementById('cl-ph').value,
-                    email: document.getElementById('cl-email').value.trim(),
-                    serviceType: document.getElementById('cl-srv').value,
-                    feeType: document.getElementById('cl-fee').value,
-                    specialization: document.getElementById('cl-spec').value,
-                    governorate: document.getElementById('cl-gov').value,
-                    area: document.getElementById('cl-ar').value,
-                    notes: document.getElementById('cl-no').value,
-                    created: todayStr,
-                    createdBy: currentUser.uid
-                });
+            const data = {
+                name: n,
+                type: document.getElementById('cl-t').value,
+                phone: document.getElementById('cl-ph').value,
+                email: document.getElementById('cl-email').value.trim(),
+                serviceType: document.getElementById('cl-srv').value,
+                feeType: document.getElementById('cl-fee').value,
+                specialization: document.getElementById('cl-spec').value,
+                governorate: document.getElementById('cl-gov').value,
+                area: document.getElementById('cl-ar').value,
+                notes: document.getElementById('cl-no').value
+            };
+            await submitDocument('clients', data, 'clients', 'عميل');
+            if (!editingState.id) {
                 ['cl-n', 'cl-ph', 'cl-email', 'cl-ar', 'cl-no'].forEach(id => document.getElementById(id).value = '');
-                showToast('✅ تم إضافة العميل', 'success');
-                logOp('إضافة', 'أضاف عميل: ' + n);
-                addNotification(`👥 تم إضافة عميل جديد: ${n}`, 'success');
-            } catch (e) { showToast('❌ خطأ في الحفظ: ' + e.message, 'error'); }
+            }
         };
 
+        window.submitVisit = async function() {
+            const cid = document.getElementById('v-cl').value;
+            if (!cid) { showToast('⚠️ اختر العميل', 'warning'); return; }
+            const data = {
+                clientId: cid,
+                clientName: cName(cid),
+                title: document.getElementById('v-title').value,
+                specialization: document.getElementById('v-spec').value,
+                type: document.getElementById('v-type').value,
+                date: document.getElementById('v-date').value,
+                status: document.getElementById('v-stat').value,
+                governorate: document.getElementById('v-gov').value,
+                area: document.getElementById('v-area').value,
+                duration: parseInt(document.getElementById('v-dur').value) || 0,
+                contractId: document.getElementById('v-con').value || null,
+                result: document.getElementById('v-result').value,
+                nextStep: document.getElementById('v-next').value
+            };
+            await submitDocument('visits', data, 'visits', 'زيارة');
+            if (!editingState.id) {
+                ['v-title', 'v-area', 'v-result', 'v-next'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('v-dur').value = '';
+            }
+        };
+
+        window.submitTask = async function() {
+            const n = document.getElementById('t-n').value.trim();
+            if (!n) { showToast('⚠️ أدخل المهمة', 'warning'); return; }
+            const cid = document.getElementById('t-cl').value;
+            const data = {
+                name: n,
+                priority: document.getElementById('t-p').value,
+                date: document.getElementById('t-d').value,
+                category: document.getElementById('t-cat').value,
+                clientId: cid || null,
+                clientName: cid ? cName(cid) : '',
+                done: false
+            };
+            await submitDocument('tasks', data, 'tasks', 'مهمة');
+            if (!editingState.id) document.getElementById('t-n').value = '';
+        };
+
+        window.submitContract = async function() {
+            const cid = document.getElementById('con-cl').value;
+            if (!cid) { showToast('⚠️ اختر العميل', 'warning'); return; }
+            const val = parseFloat(document.getElementById('con-val').value) || 0;
+            const inst = parseInt(document.getElementById('con-inst').value) || 1;
+            const pt = document.getElementById('con-pt').value;
+            const start = document.getElementById('con-s').value || todayStr;
+            const payments = [];
+            for (let i = 0; i < inst; i++) {
+                let d = new Date(start);
+                if (pt === 'monthly') d.setMonth(d.getMonth() + i);
+                else if (pt === 'quarterly') d.setMonth(d.getMonth() + (i * 3));
+                payments.push({ num: i + 1, amount: Math.round(val / inst), date: d.toISOString().split('T')[0],
+                    status: 'pending' });
+            }
+            const monthlyValue = pt === 'monthly' ? Math.round(val / inst) : pt === 'quarterly' ? Math.round(val /
+                inst / 3) : 0;
+            const data = {
+                clientId: cid,
+                clientName: cName(cid),
+                service: document.getElementById('con-srv').value,
+                value: val,
+                monthlyValue,
+                status: document.getElementById('con-stat').value,
+                start,
+                end: document.getElementById('con-e').value,
+                payType: pt,
+                installments: inst,
+                payments,
+                notes: document.getElementById('con-no').value
+            };
+            await submitDocument('contracts', data, 'contracts', 'عقد');
+            if (!editingState.id) {
+                ['con-val', 'con-no'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('con-inst').value = '1';
+            }
+        };
+
+        window.submitFinance = async function() {
+            const amt = parseFloat(document.getElementById('f-amt').value);
+            if (!amt || amt <= 0) { showToast('⚠️ أدخل مبلغ', 'warning'); return; }
+            const cid = document.getElementById('f-cl').value;
+            const data = {
+                type: document.getElementById('f-type').value,
+                amount: amt,
+                category: document.getElementById('f-cat').value,
+                date: document.getElementById('f-date').value,
+                clientId: cid || null,
+                clientName: cid ? cName(cid) : '',
+                contractId: document.getElementById('f-con').value || null,
+                note: document.getElementById('f-note').value
+            };
+            await submitDocument('finances', data, 'finance', 'حركة مالية');
+            if (!editingState.id) {
+                ['f-amt', 'f-note'].forEach(id => document.getElementById(id).value = '');
+            }
+        };
+
+        window.submitMonthlyReport = async function() {
+            const month = document.getElementById('mr-month').value;
+            if (!month) { showToast('⚠️ اختر الشهر', 'warning'); return; }
+            const cid = document.getElementById('mr-cl').value;
+            const data = {
+                clientId: cid || null,
+                clientName: cid ? cName(cid) : 'عام',
+                month,
+                positives: document.getElementById('mr-pos').value,
+                negatives: document.getElementById('mr-neg').value,
+                opportunities: document.getElementById('mr-opp').value,
+                goals: document.getElementById('mr-goals').value,
+                score: parseInt(document.getElementById('mr-score').value) || 0,
+                notes: document.getElementById('mr-notes').value
+            };
+            await submitDocument('monthlyReports', data, 'reports', 'تقرير شهري');
+            if (!editingState.id) {
+                ['mr-pos', 'mr-neg', 'mr-opp', 'mr-goals', 'mr-notes'].forEach(id => document.getElementById(id)
+                    .value = '');
+                document.getElementById('mr-score').value = '';
+            }
+        };
+
+        window.submitDebt = async function() {
+            const cid = document.getElementById('debt-cl-top').value;
+            const amt = parseFloat(document.getElementById('debt-amt-top').value);
+            if (!cid) { showToast('⚠️ اختر العميل', 'warning'); return; }
+            if (!amt || amt <= 0) { showToast('⚠️ أدخل مبلغ', 'warning'); return; }
+            const data = {
+                clientId: cid,
+                clientName: cName(cid),
+                amount: amt,
+                expectedDate: document.getElementById('debt-date-top').value || '',
+                note: document.getElementById('debt-note-top').value,
+                collected: false
+            };
+            await submitDocument('debts', data, 'finance', 'مديونية');
+            if (!editingState.id) {
+                ['debt-amt-top', 'debt-date-top', 'debt-note-top'].forEach(id => document.getElementById(id).value =
+                '');
+            }
+        };
+
+        window.submitSpecialReport = async function(kind) {
+            if (!canWriteModule('reports') && !canEdit('reports')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            let data = { kind };
+            if (kind === 'media') {
+                const cid = document.getElementById('sr-media-cl').value;
+                data = { ...data, clientId: cid || null, clientName: cid ? cName(cid) : '',
+                    platform: document.getElementById('sr-media-platform').value,
+                    required: document.getElementById('sr-media-required').value,
+                    goals: document.getElementById('sr-media-goals').value,
+                    growth: document.getElementById('sr-media-growth').value,
+                    likes: document.getElementById('sr-media-likes').value,
+                    results: document.getElementById('sr-media-results').value };
+                if (!data.platform) { showToast('⚠️ أدخل المنصة', 'warning'); return; }
+            } else if (kind === 'meeting') {
+                const cid = document.getElementById('sr-meeting-cl').value;
+                data = { ...data, clientId: cid || null, clientName: cid ? cName(cid) : '',
+                    title: document.getElementById('sr-meeting-title').value,
+                    points: document.getElementById('sr-meeting-points').value,
+                    decisions: document.getElementById('sr-meeting-decisions').value };
+                if (!data.title) { showToast('⚠️ أدخل موضوع الاجتماع', 'warning'); return; }
+            } else if (kind === 'consult') {
+                const cid = document.getElementById('sr-consult-cl').value;
+                data = { ...data, clientId: cid || null, clientName: cid ? cName(cid) : '',
+                    title: document.getElementById('sr-consult-title').value,
+                    details: document.getElementById('sr-consult-details').value,
+                    results: document.getElementById('sr-consult-results').value };
+                if (!data.title) { showToast('⚠️ أدخل بند الاستشارة', 'warning'); return; }
+            }
+            await submitDocument('specialReports', data, 'reports', 'تقرير خاص');
+            if (!editingState.id) {
+                ['sr-media-platform', 'sr-media-required', 'sr-media-goals', 'sr-media-growth',
+                    'sr-media-likes', 'sr-media-results',
+                    'sr-meeting-title', 'sr-meeting-points', 'sr-meeting-decisions',
+                    'sr-consult-title', 'sr-consult-details', 'sr-consult-results'
+                ].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            }
+        };
+
+        window.submitActualVisit = async function() {
+            const cid = document.getElementById('av-client').value;
+            if (!cid) { showToast('⚠️ اختر العميل', 'warning'); return; }
+            const data = {
+                clientId: cid,
+                clientName: cName(cid),
+                type: document.getElementById('av-type').value,
+                title: document.getElementById('av-title').value,
+                date: document.getElementById('av-date').value,
+                specialization: document.getElementById('av-spec').value,
+                status: document.getElementById('av-status').value,
+                governorate: document.getElementById('av-gov').value,
+                area: document.getElementById('av-area').value,
+                duration: parseInt(document.getElementById('av-dur').value) || 0,
+                contractId: document.getElementById('av-contract').value || null,
+                result: document.getElementById('av-result').value
+            };
+            await submitDocument('actualVisits', data, 'actualvisits', 'زيارة فعلية');
+            if (!editingState.id) {
+                ['av-title', 'av-area', 'av-result'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('av-dur').value = '';
+            }
+        };
+
+        // ===== DELETE (Enhanced) =====
         window.delClient = async function(id) {
-            if (!canDeleteModule('clients')) { showToast('⛔ ليس لديك صلاحية الحذف في العملاء', 'error'); return; }
+            if (!canDeleteModule('clients')) { showToast('⛔ ليس لديك صلاحية الحذف', 'error'); return; }
             if (!confirm('حذف هذا العميل؟')) return;
             const c = getClient(id);
             await deleteDoc(doc(db, 'clients', id));
             showToast('🗑️ تم الحذف', 'info');
             logOp('حذف', 'حذف عميل: ' + (c ? c.name : id));
         };
+        window.delVisit = async function(id) {
+            if (!canDeleteModule('visits')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            if (!confirm('حذف هذه الزيارة؟')) return;
+            await deleteDoc(doc(db, 'visits', id));
+            showToast('🗑️ تم الحذف', 'info');
+        };
+        window.delTask = async function(id) {
+            if (!canDeleteModule('tasks')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            if (!confirm('حذف هذه المهمة؟')) return;
+            await deleteDoc(doc(db, 'tasks', id));
+            showToast('🗑️ تم الحذف', 'info');
+        };
+        window.delContract = async function(id) {
+            if (!canDeleteModule('contracts')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            if (!confirm('حذف هذا العقد؟')) return;
+            await deleteDoc(doc(db, 'contracts', id));
+            showToast('🗑️ تم الحذف', 'info');
+        };
+        window.delFinance = async function(id) {
+            if (!canDeleteModule('finance')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            if (!confirm('حذف هذه الحركة؟')) return;
+            await deleteDoc(doc(db, 'finances', id));
+            showToast('🗑️ تم الحذف', 'info');
+        };
+        window.delMR = async function(id) {
+            if (!canDeleteModule('reports')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            if (!confirm('حذف هذا التقرير؟')) return;
+            await deleteDoc(doc(db, 'monthlyReports', id));
+            showToast('🗑️ تم الحذف', 'info');
+        };
+        window.delSR = async function(id) {
+            if (!canDeleteModule('reports')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            if (!confirm('حذف هذا التقرير؟')) return;
+            await deleteDoc(doc(db, 'specialReports', id));
+            showToast('🗑️ تم الحذف', 'info');
+        };
+        window.delActualVisit = async function(id) {
+            if (!canDeleteModule('actualvisits')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            if (!confirm('حذف هذه الزيارة؟')) return;
+            await deleteDoc(doc(db, 'actualVisits', id));
+            showToast('🗑️ تم الحذف', 'info');
+        };
+        window.delDebt = async function(id) {
+            if (!canDeleteModule('finance')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            if (!confirm('حذف هذه المديونية؟')) return;
+            await deleteDoc(doc(db, 'debts', id));
+            showToast('🗑️ تم الحذف', 'info');
+        };
 
+        // ===== CLIENTS =====
         window.fClients = function(f, el) {
             clF = f;
             document.querySelectorAll('#clients .fbtn').forEach(b => b.classList.remove('on'));
@@ -3683,6 +4223,7 @@
                             <div class="vc-meta">📍 ${c.governorate||''} ${c.area?`- ${c.area}`:''} ${c.phone?`• 📞 ${c.phone}`:''} ${c.email?`• 📧 ${c.email}`:''}<br>🏥 ${cv} زيارة • 📄 ${cc} عقد ${cf?`• 💰 ${fmt(cf)}`:''}<br>${lastV?`🕐 آخر زيارة: ${lastV.date} (منذ ${daysSince} يوم)`:'🔴 لم يتم زيارته بعد'}${c.notes?`<br>📝 ${c.notes}`:''}</div>
                             <div class="client-tags">${c.serviceType?`<span class="badge b-blue">🛠️ ${c.serviceType}</span>`:''}${c.feeType?`<span class="badge b-purple">${c.feeType}</span>`:''}</div>
                             <div class="rep-actions">
+                                ${canEdit('clients')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('clients','${c.id}','clients')">✏️ تعديل</button>`:''}
                                 <button class="rep-btn rep-pdf" onclick="reportAction('client','${c.id}','pdf')">🖨️ ملف PDF</button>
                                 <button class="rep-btn rep-wa" ${c.phone?'':'disabled title="لا يوجد رقم هاتف"'} onclick="reportAction('client','${c.id}','wa')">📲 واتساب</button>
                                 <button class="rep-btn rep-mail" ${c.email?'':'disabled title="لا يوجد إيميل"'} onclick="reportAction('client','${c.id}','email')">📧 إيميل</button>
@@ -3698,42 +4239,6 @@
         }
 
         // ===== VISITS =====
-        window.addVisit = async function() {
-            if (!canWriteModule('visits')) { showToast('⛔ ليس لديك صلاحية الكتابة في الزيارات', 'error'); return; }
-            const cid = document.getElementById('v-cl').value;
-            if (!cid) { showToast('⚠️ اختر العميل', 'warning'); return; }
-            setSyncStatus('syncing');
-            try {
-                await addDoc(collection(db, 'visits'), {
-                    clientId: cid,
-                    clientName: cName(cid),
-                    title: document.getElementById('v-title').value,
-                    specialization: document.getElementById('v-spec').value,
-                    type: document.getElementById('v-type').value,
-                    date: document.getElementById('v-date').value,
-                    status: document.getElementById('v-stat').value,
-                    governorate: document.getElementById('v-gov').value,
-                    area: document.getElementById('v-area').value,
-                    duration: parseInt(document.getElementById('v-dur').value) || 0,
-                    contractId: document.getElementById('v-con').value || null,
-                    result: document.getElementById('v-result').value,
-                    nextStep: document.getElementById('v-next').value,
-                    created: todayStr,
-                    createdBy: currentUser.uid
-                });
-                ['v-title', 'v-area', 'v-result', 'v-next'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('v-dur').value = '';
-                showToast('✅ تم تسجيل الزيارة', 'success');
-                addNotification(`🏥 زيارة جديدة: ${cName(cid)}`, 'info');
-            } catch (e) { showToast('❌ خطأ: ' + e.message, 'error'); }
-        };
-
-        window.delVisit = async function(id) {
-            if (!canDeleteModule('visits')) { showToast('⛔ ليس لديك صلاحية الحذف في الزيارات', 'error'); return; }
-            await deleteDoc(doc(db, 'visits', id));
-            showToast('🗑️ تم الحذف', 'info');
-        };
-
         window.fVisits = function(f, el) {
             vF = f;
             document.querySelectorAll('#visits .fbtn').forEach(b => b.classList.remove('on'));
@@ -3761,6 +4266,7 @@
                         ${v.nextStep?`<br>➡️ <strong>${v.nextStep}</strong>`:''}
                     </div>
                     <div class="rep-actions">
+                        ${canEdit('visits')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('visits','${v.id}','visits')">✏️ تعديل</button>`:''}
                         <button class="rep-btn rep-pdf" onclick="reportAction('visit','${v.id}','pdf')">🖨️ PDF</button>
                         <button class="rep-btn rep-wa" onclick="reportAction('visit','${v.id}','wa')">📲 واتساب</button>
                         <button class="rep-btn rep-mail" onclick="reportAction('visit','${v.id}','email')">📧 إيميل</button>
@@ -3815,44 +4321,6 @@
         }
 
         // ===== ACTUAL VISITS =====
-        window.addActualVisit = async function() {
-            if (!canWriteModule('actualvisits')) { showToast('⛔ ليس لديك صلاحية الكتابة في الزيارات الفعلية',
-                'error'); return; }
-            const cid = document.getElementById('av-client').value;
-            if (!cid) { showToast('⚠️ اختر العميل', 'warning'); return; }
-            setSyncStatus('syncing');
-            try {
-                await addDoc(collection(db, 'actualVisits'), {
-                    clientId: cid,
-                    clientName: cName(cid),
-                    type: document.getElementById('av-type').value,
-                    title: document.getElementById('av-title').value,
-                    date: document.getElementById('av-date').value,
-                    specialization: document.getElementById('av-spec').value,
-                    status: document.getElementById('av-status').value,
-                    governorate: document.getElementById('av-gov').value,
-                    area: document.getElementById('av-area').value,
-                    duration: parseInt(document.getElementById('av-dur').value) || 0,
-                    contractId: document.getElementById('av-contract').value || null,
-                    result: document.getElementById('av-result').value,
-                    created: todayStr,
-                    createdBy: currentUser.uid
-                });
-                ['av-title', 'av-area', 'av-result'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('av-dur').value = '';
-                showToast('✅ تم تسجيل الزيارة الفعلية', 'success');
-                addNotification(`📋 زيارة فعلية جديدة: ${cName(cid)}`, 'info');
-            } catch (e) { showToast('❌ خطأ: ' + e.message, 'error'); }
-        };
-
-        window.delActualVisit = async function(id) {
-            if (!canDeleteModule('actualvisits')) { showToast('⛔ ليس لديك صلاحية الحذف في الزيارات الفعلية',
-                'error'); return; }
-            await deleteDoc(doc(db, 'actualVisits', id));
-            showToast('🗑️ تم الحذف', 'info');
-            renderActualVisits();
-        };
-
         function renderActualVisits() {
             const list = document.getElementById('actual-visits-list');
             if (!list) return;
@@ -3871,6 +4339,9 @@
                             <div style="font-size:0.7rem;color:var(--muted)">📅 ${v.date||'غير محدد'} • 🏷️ ${v.type||'عام'} ${v.specialization?`• 🩺 ${v.specialization}`:''}</div>
                             <div style="font-size:0.7rem;color:var(--muted)">📍 ${v.governorate||''} ${v.area?`- ${v.area}`:''} ${v.duration?`• ⏱️ ${v.duration} دقيقة`:''}</div>
                             ${v.result?`<div style="font-size:0.7rem;color:var(--text)">📝 ${v.result}</div>`:''}
+                            <div class="rep-actions">
+                                ${canEdit('actualvisits')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('actualvisits','${v.id}','actualvisits')">✏️ تعديل</button>`:''}
+                            </div>
                         </div>
                         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
                             <span class="badge ${statusClass[v.status]||'b-med'}">${statusMap[v.status]||v.status}</span>
@@ -3934,40 +4405,10 @@
         }
 
         // ===== TASKS =====
-        window.addTask = async function() {
-            if (!canWriteModule('tasks')) { showToast('⛔ ليس لديك صلاحية الكتابة في المهام', 'error'); return; }
-            const n = document.getElementById('t-n').value.trim();
-            if (!n) { showToast('⚠️ أدخل المهمة', 'warning'); return; }
-            const cid = document.getElementById('t-cl').value;
-            setSyncStatus('syncing');
-            try {
-                await addDoc(collection(db, 'tasks'), {
-                    name: n,
-                    priority: document.getElementById('t-p').value,
-                    date: document.getElementById('t-d').value,
-                    category: document.getElementById('t-cat').value,
-                    clientId: cid || null,
-                    clientName: cid ? cName(cid) : '',
-                    done: false,
-                    created: todayStr,
-                    createdBy: currentUser.uid
-                });
-                document.getElementById('t-n').value = '';
-                showToast('✅ تمت الإضافة', 'success');
-                addNotification(`📋 مهمة جديدة: ${n}`, 'info');
-            } catch (e) { showToast('❌ خطأ', 'error'); }
-        };
-
         window.toggleTask = async function(id, done) {
             if (!canWriteModule('tasks')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
             await updateDoc(doc(db, 'tasks', id), { done: !done });
             if (!done) addNotification(`✅ مهمة مكتملة: ${tasks.find(t=>t.id===id)?.name}`, 'success');
-        };
-
-        window.delTask = async function(id) {
-            if (!canDeleteModule('tasks')) { showToast('⛔ ليس لديك صلاحية الحذف في المهام', 'error'); return; }
-            await deleteDoc(doc(db, 'tasks', id));
-            showToast('🗑️ تم الحذف', 'info');
         };
 
         window.fTasks = function(f, el) {
@@ -3993,6 +4434,9 @@
                         <div style="font-size:0.82rem;font-weight:700">${t.name}</div>
                         ${t.clientName?`<div style="font-size:0.65rem;color:var(--teal)">👤 ${t.clientName}</div>`:''}
                         ${t.date&&!t.done&&t.date<todayStr?`<span class="badge b-red" style="font-size:0.55rem;">متأخرة</span>`:''}
+                        <div class="rep-actions">
+                            ${canEdit('tasks')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('tasks','${t.id}','tasks')">✏️ تعديل</button>`:''}
+                        </div>
                     </div>
                     <span class="badge ${t.priority==='high'?'b-high':t.priority==='med'?'b-med':'b-low'}">${t.priority==='high'?'عالية':t.priority==='med'?'متوسطة':'منخفضة'}</span>
                     ${t.date?`<span style="font-size:0.65rem;color:var(--muted)">${t.date}</span>`:''}
@@ -4002,50 +4446,6 @@
         }
 
         // ===== CONTRACTS =====
-        window.addContract = async function() {
-            if (!canWriteModule('contracts')) { showToast('⛔ ليس لديك صلاحية الكتابة في العقود', 'error'); return; }
-            const cid = document.getElementById('con-cl').value;
-            if (!cid) { showToast('⚠️ اختر العميل', 'warning'); return; }
-            const val = parseFloat(document.getElementById('con-val').value) || 0;
-            const inst = parseInt(document.getElementById('con-inst').value) || 1;
-            const pt = document.getElementById('con-pt').value;
-            const start = document.getElementById('con-s').value || todayStr;
-            const payments = [];
-            for (let i = 0; i < inst; i++) {
-                let d = new Date(start);
-                if (pt === 'monthly') d.setMonth(d.getMonth() + i);
-                else if (pt === 'quarterly') d.setMonth(d.getMonth() + (i * 3));
-                payments.push({ num: i + 1, amount: Math.round(val / inst), date: d.toISOString().split('T')[0],
-                    status: 'pending' });
-            }
-            const monthlyValue = pt === 'monthly' ? Math.round(val / inst) : pt === 'quarterly' ? Math.round(val /
-                inst / 3) : 0;
-            setSyncStatus('syncing');
-            try {
-                await addDoc(collection(db, 'contracts'), {
-                    clientId: cid,
-                    clientName: cName(cid),
-                    service: document.getElementById('con-srv').value,
-                    value: val,
-                    monthlyValue,
-                    status: document.getElementById('con-stat').value,
-                    start,
-                    end: document.getElementById('con-e').value,
-                    payType: pt,
-                    installments: inst,
-                    payments,
-                    notes: document.getElementById('con-no').value,
-                    created: todayStr,
-                    createdBy: currentUser.uid
-                });
-                ['con-val', 'con-no'].forEach(id => document.getElementById(id).value = '');
-                document.getElementById('con-inst').value = '1';
-                showToast('✅ تم حفظ العقد', 'success');
-                logOp('إضافة', 'أضاف عقد لعميل: ' + cName(cid));
-                addNotification(`📄 عقد جديد: ${cName(cid)}`, 'success');
-            } catch (e) { showToast('❌ خطأ: ' + e.message, 'error'); }
-        };
-
         window.togglePay = async function(cid, pnum) {
             if (!canWriteModule('contracts')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
             const c = contracts.find(c => c.id == cid);
@@ -4057,13 +4457,6 @@
             await updateDoc(doc(db, 'contracts', cid), { payments });
             showToast(p.status === 'paid' ? '✅ تم تسجيل الدفعة' : '↩️ تم الإلغاء', 'info');
             if (p.status === 'paid') addNotification(`💰 دفعة مسددة: ${c.clientName} - ${fmt(p.amount)}`, 'success');
-        };
-
-        window.delContract = async function(id) {
-            if (!canDeleteModule('contracts')) { showToast('⛔ ليس لديك صلاحية الحذف في العقود', 'error'); return; }
-            await deleteDoc(doc(db, 'contracts', id));
-            showToast('🗑️ تم الحذف', 'info');
-            logOp('حذف', 'حذف عقد رقم: ' + id);
         };
 
         function renderConStatsRow() {
@@ -4149,6 +4542,9 @@
                         <div style="flex:1;">
                             <div style="font-size:0.8rem;font-weight:700;">${c.clientName}</div>
                             <div style="font-size:0.65rem;color:var(--muted);">${c.service} • ${c.status === 'active' ? '✅ نشط' : c.status === 'seasonal' ? '🌙 موسمي' : '⏳ معلق'}</div>
+                            <div class="rep-actions">
+                                ${canEdit('contracts')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('contracts','${c.id}','contracts')">✏️ تعديل</button>`:''}
+                            </div>
                         </div>
                         <div style="font-size:0.85rem;font-weight:900;color:var(--teal);">${fmt(c.value)}</div>
                     </div>`
@@ -4170,6 +4566,9 @@
                             <div style="flex:1;">
                                 <div style="font-size:0.8rem;font-weight:700;">${c.clientName}</div>
                                 <div style="font-size:0.65rem;color:var(--muted);">📅 ${c.end} • ${c.service}</div>
+                                <div class="rep-actions">
+                                    ${canEdit('contracts')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('contracts','${c.id}','contracts')">✏️ تعديل</button>`:''}
+                                </div>
                             </div>
                             <span class="badge ${days <= 7 ? 'b-high' : days <= 14 ? 'b-med' : 'b-blue'}">${days} يوم</span>
                         </div>
@@ -4207,6 +4606,9 @@
                             </div>
                             <div class="prog-bar" style="margin-top:5px;height:7px"><div class="prog-fill pf-gold" style="width:${pp}%"></div></div>
                             <div style="font-size:0.65rem;color:var(--muted);margin-top:2px">${pp}% محصّل</div>
+                            <div class="rep-actions">
+                                ${canEdit('contracts')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('contracts','${c.id}','contracts')">✏️ تعديل</button>`:''}
+                            </div>
                         </div>
                         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
                             <div style="font-size:1rem;font-weight:900;color:var(--teal)">${fmt(c.value)}</div>
@@ -4221,33 +4623,6 @@
             renderConStatsRow();
             renderContractAnalytics();
         }
-
-        // ===== DEBT TOP =====
-        window.addDebtTop = async function() {
-            if (!canWriteModule('finance')) { showToast('⛔ ليس لديك صلاحية الكتابة في المالية', 'error'); return; }
-            const cid = document.getElementById('debt-cl-top').value;
-            const amt = parseFloat(document.getElementById('debt-amt-top').value);
-            if (!cid) { showToast('⚠️ اختر العميل', 'warning'); return; }
-            if (!amt || amt <= 0) { showToast('⚠️ أدخل مبلغ', 'warning'); return; }
-            setSyncStatus('syncing');
-            try {
-                await addDoc(collection(db, 'debts'), {
-                    clientId: cid,
-                    clientName: cName(cid),
-                    amount: amt,
-                    expectedDate: document.getElementById('debt-date-top').value || '',
-                    note: document.getElementById('debt-note-top').value,
-                    collected: false,
-                    created: todayStr,
-                    createdBy: currentUser.uid
-                });
-                ['debt-amt-top', 'debt-date-top', 'debt-note-top'].forEach(id => document.getElementById(id).value =
-                '');
-                showToast('✅ تمت إضافة المديونية', 'success');
-                logOp('إضافة', 'أضاف مديونية لعميل: ' + cName(cid));
-                addNotification(`💸 مديونية جديدة: ${cName(cid)} - ${fmt(amt)}`, 'warning');
-            } catch (e) { showToast('❌ خطأ', 'error'); }
-        };
 
         // ===== FINANCE =====
         function renderConFinSummary() {
@@ -4279,76 +4654,6 @@
             }).join('');
         }
 
-        window.addFinance = async function() {
-            if (!canWriteModule('finance')) { showToast('⛔ ليس لديك صلاحية الكتابة في المالية', 'error'); return; }
-            const amt = parseFloat(document.getElementById('f-amt').value);
-            if (!amt || amt <= 0) { showToast('⚠️ أدخل مبلغ', 'warning'); return; }
-            const cid = document.getElementById('f-cl').value;
-            setSyncStatus('syncing');
-            try {
-                await addDoc(collection(db, 'finances'), {
-                    type: document.getElementById('f-type').value,
-                    amount: amt,
-                    category: document.getElementById('f-cat').value,
-                    date: document.getElementById('f-date').value,
-                    clientId: cid || null,
-                    clientName: cid ? cName(cid) : '',
-                    contractId: document.getElementById('f-con').value || null,
-                    note: document.getElementById('f-note').value,
-                    created: todayStr,
-                    createdBy: currentUser.uid
-                });
-                ['f-amt', 'f-note'].forEach(id => document.getElementById(id).value = '');
-                showToast('✅ تمت الإضافة', 'success');
-                addNotification(`💰 حركة مالية جديدة: ${fmt(amt)}`, 'info');
-            } catch (e) { showToast('❌ خطأ', 'error'); }
-        };
-
-        window.delFinance = async function(id) {
-            if (!canDeleteModule('finance')) { showToast('⛔ ليس لديك صلاحية الحذف في المالية', 'error'); return; }
-            await deleteDoc(doc(db, 'finances', id));
-            showToast('🗑️ تم الحذف', 'info');
-            logOp('حذف', 'حذف حركة مالية: ' + id);
-        };
-
-        window.toggleDebtCollected = async function(id, collected) {
-            if (!canWriteModule('finance')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
-            await updateDoc(doc(db, 'debts', id), { collected: !collected });
-            const d = debts.find(d => d.id === id);
-            if (d && !collected) addNotification(`✅ تم تحصيل: ${d.clientName} - ${fmt(d.amount)}`, 'success');
-        };
-
-        window.delDebt = async function(id) {
-            if (!canDeleteModule('finance')) { showToast('⛔ ليس لديك صلاحية الحذف في المالية', 'error'); return; }
-            await deleteDoc(doc(db, 'debts', id));
-            showToast('🗑️ تم الحذف', 'info');
-            logOp('حذف', 'حذف مديونية: ' + id);
-        };
-
-        function renderDebts() {
-            const list = document.getElementById('debts-list');
-            if (!list) return;
-            if (!debts.length) { list.innerHTML =
-                    '<div class="empty" style="padding:14px"><p>لا توجد مديونيات مسجّلة</p></div>'; return; }
-            const pending = debts.filter(d => !d.collected);
-            const totalPending = pending.reduce((a, d) => a + d.amount, 0);
-            list.innerHTML =
-                `<div style="font-size:0.72rem;color:var(--muted);font-weight:700;margin-bottom:8px">إجمالي المديونيات المعلقة: <span style="color:var(--red);font-weight:900">${fmt(totalPending)}</span></div>` +
-                [...debts].sort((a, b) => (a.collected ? 1 : 0) - (b.collected ? 1 : 0) || (a.expectedDate || '').localeCompare(
-                    b.expectedDate || '')).map(d => {
-                    const late = !d.collected && d.expectedDate && d.expectedDate < todayStr;
-                    return `<div class="item" style="border-right:3px solid ${d.collected?'var(--green)':late?'var(--red)':'var(--gold)'}">
-                        <div style="flex:1">
-                            <div style="font-size:0.8rem;font-weight:700">${d.collected?'✅':'⚠️'} ${d.clientName}</div>
-                            <div style="font-size:0.67rem;color:var(--muted)">${d.expectedDate?`📅 موعد التحصيل: ${d.expectedDate}`:'بدون موعد محدد'}${d.note?` • 📝 ${d.note}`:''}</div>
-                        </div>
-                        <div style="font-size:0.9rem;font-weight:900;color:${d.collected?'var(--green)':'var(--red)'}">${fmt(d.amount)}</div>
-                        <button class="rep-btn" onclick="toggleDebtCollected('${d.id}',${!!d.collected})">${d.collected?'↩️ إرجاع':'✅ تحصيل'}</button>
-                        ${canDeleteModule('finance')?`<button class="del-btn" onclick="delDebt('${d.id}')">✕</button>`:''}
-                    </div>`;
-                }).join('');
-        }
-
         window.fFin = function(f, el) {
             fF = f;
             document.querySelectorAll('#finance .fbtn').forEach(b => b.classList.remove('on'));
@@ -4377,6 +4682,9 @@
                     <div style="flex:1">
                         <div style="font-size:0.8rem;font-weight:700">${f.note||f.category}${f.clientName?` • 👤 ${f.clientName}`:''}</div>
                         <div style="font-size:0.67rem;color:var(--muted)">📅 ${f.date||''} <span class="badge b-blue" style="font-size:0.6rem">${f.category}</span></div>
+                        <div class="rep-actions">
+                            ${canEdit('finances')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('finances','${f.id}','finance')">✏️ تعديل</button>`:''}
+                        </div>
                     </div>
                     <div style="font-size:0.9rem;font-weight:900;color:${f.type==='income'?'var(--green)':'var(--red)'}">${f.type==='income'?'+':'-'}${fmt(f.amount)}</div>
                     ${canDeleteModule('finance')?`<button class="del-btn" onclick="delFinance('${f.id}')">✕</button>`:''}
@@ -4403,100 +4711,49 @@
                 </div>`;
         }
 
+        window.toggleDebtCollected = async function(id, collected) {
+            if (!canWriteModule('finance')) { showToast('⛔ ليس لديك صلاحية', 'error'); return; }
+            await updateDoc(doc(db, 'debts', id), { collected: !collected });
+            const d = debts.find(d => d.id === id);
+            if (d && !collected) addNotification(`✅ تم تحصيل: ${d.clientName} - ${fmt(d.amount)}`, 'success');
+        };
+
+        function renderDebts() {
+            const list = document.getElementById('debts-list');
+            if (!list) return;
+            if (!debts.length) { list.innerHTML =
+                    '<div class="empty" style="padding:14px"><p>لا توجد مديونيات مسجّلة</p></div>'; return; }
+            const pending = debts.filter(d => !d.collected);
+            const totalPending = pending.reduce((a, d) => a + d.amount, 0);
+            list.innerHTML =
+                `<div style="font-size:0.72rem;color:var(--muted);font-weight:700;margin-bottom:8px">إجمالي المديونيات المعلقة: <span style="color:var(--red);font-weight:900">${fmt(totalPending)}</span></div>` +
+                [...debts].sort((a, b) => (a.collected ? 1 : 0) - (b.collected ? 1 : 0) || (a.expectedDate || '').localeCompare(
+                    b.expectedDate || '')).map(d => {
+                    const late = !d.collected && d.expectedDate && d.expectedDate < todayStr;
+                    return `<div class="item" style="border-right:3px solid ${d.collected?'var(--green)':late?'var(--red)':'var(--gold)'}">
+                        <div style="flex:1">
+                            <div style="font-size:0.8rem;font-weight:700">${d.collected?'✅':'⚠️'} ${d.clientName}</div>
+                            <div style="font-size:0.67rem;color:var(--muted)">${d.expectedDate?`📅 موعد التحصيل: ${d.expectedDate}`:'بدون موعد محدد'}${d.note?` • 📝 ${d.note}`:''}</div>
+                            <div class="rep-actions">
+                                ${canEdit('debts')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('debts','${d.id}','finance')">✏️ تعديل</button>`:''}
+                            </div>
+                        </div>
+                        <div style="font-size:0.9rem;font-weight:900;color:${d.collected?'var(--green)':'var(--red)'}">${fmt(d.amount)}</div>
+                        <button class="rep-btn" onclick="toggleDebtCollected('${d.id}',${!!d.collected})">${d.collected?'↩️ إرجاع':'✅ تحصيل'}</button>
+                        ${canDeleteModule('finance')?`<button class="del-btn" onclick="delDebt('${d.id}')">✕</button>`:''}
+                    </div>`;
+                }).join('');
+        }
+
         // ===== MONTHLY REPORTS =====
-        window.addMonthlyReport = async function() {
-            if (!canWriteModule('reports')) { showToast('⛔ ليس لديك صلاحية الكتابة في التقارير', 'error'); return; }
-            const month = document.getElementById('mr-month').value;
-            if (!month) { showToast('⚠️ اختر الشهر', 'warning'); return; }
-            const cid = document.getElementById('mr-cl').value;
-            setSyncStatus('syncing');
-            try {
-                await addDoc(collection(db, 'monthlyReports'), {
-                    clientId: cid || null,
-                    clientName: cid ? cName(cid) : 'عام',
-                    month,
-                    positives: document.getElementById('mr-pos').value,
-                    negatives: document.getElementById('mr-neg').value,
-                    opportunities: document.getElementById('mr-opp').value,
-                    goals: document.getElementById('mr-goals').value,
-                    score: parseInt(document.getElementById('mr-score').value) || 0,
-                    notes: document.getElementById('mr-notes').value,
-                    created: todayStr,
-                    createdBy: currentUser.uid
-                });
-                ['mr-pos', 'mr-neg', 'mr-opp', 'mr-goals', 'mr-notes'].forEach(id => document.getElementById(id)
-                    .value = '');
-                document.getElementById('mr-score').value = '';
-                showToast('💾 تم حفظ التقرير', 'success');
-                addNotification(`📝 تقرير شهري جديد: ${month}`, 'info');
-            } catch (e) { showToast('❌ خطأ', 'error'); }
-        };
-
-        window.delMR = async function(id) {
-            if (!canDeleteModule('reports')) { showToast('⛔ ليس لديك صلاحية الحذف في التقارير', 'error'); return; }
-            await deleteDoc(doc(db, 'monthlyReports', id));
-            showToast('🗑️ تم الحذف', 'info');
-        };
-
         window.showRepKind = function(kind, el) {
             document.querySelectorAll('#monthly .fbtn').forEach(b => b.classList.remove('on'));
             el.classList.add('on');
             document.querySelectorAll('#monthly .rep-form').forEach(f => f.style.display = 'none');
             document.getElementById('rf-' + kind).style.display = 'block';
+            // If it's actualVisits report, fill client dropdown
+            if (kind === 'actualVisits') fillSelects();
         };
-
-        window.addSpecialReport = async function(kind) {
-            if (!canWriteModule('reports')) { showToast('⛔ ليس لديك صلاحية الكتابة في التقارير', 'error'); return; }
-            setSyncStatus('syncing');
-            try {
-                let data = { kind, created: todayStr, createdBy: currentUser.uid };
-                if (kind === 'media') {
-                    const cid = document.getElementById('sr-media-cl').value;
-                    data = { ...data, clientId: cid || null, clientName: cid ? cName(cid) : '',
-                        platform: document.getElementById('sr-media-platform').value,
-                        required: document.getElementById('sr-media-required').value,
-                        goals: document.getElementById('sr-media-goals').value,
-                        growth: document.getElementById('sr-media-growth').value,
-                        likes: document.getElementById('sr-media-likes').value,
-                        results: document.getElementById('sr-media-results').value };
-                    if (!data.platform) { showToast('⚠️ أدخل المنصة', 'warning'); return; }
-                    await addDoc(collection(db, 'specialReports'), data);
-                    ['sr-media-platform', 'sr-media-required', 'sr-media-goals', 'sr-media-growth',
-                        'sr-media-likes', 'sr-media-results'
-                    ].forEach(id => document.getElementById(id).value = '');
-                } else if (kind === 'meeting') {
-                    const cid = document.getElementById('sr-meeting-cl').value;
-                    data = { ...data, clientId: cid || null, clientName: cid ? cName(cid) : '',
-                        title: document.getElementById('sr-meeting-title').value,
-                        points: document.getElementById('sr-meeting-points').value,
-                        decisions: document.getElementById('sr-meeting-decisions').value };
-                    if (!data.title) { showToast('⚠️ أدخل موضوع الاجتماع', 'warning'); return; }
-                    await addDoc(collection(db, 'specialReports'), data);
-                    ['sr-meeting-title', 'sr-meeting-points', 'sr-meeting-decisions'].forEach(id => document
-                        .getElementById(id).value = '');
-                } else if (kind === 'consult') {
-                    const cid = document.getElementById('sr-consult-cl').value;
-                    data = { ...data, clientId: cid || null, clientName: cid ? cName(cid) : '',
-                        title: document.getElementById('sr-consult-title').value,
-                        details: document.getElementById('sr-consult-details').value,
-                        results: document.getElementById('sr-consult-results').value };
-                    if (!data.title) { showToast('⚠️ أدخل بند الاستشارة', 'warning'); return; }
-                    await addDoc(collection(db, 'specialReports'), data);
-                    ['sr-consult-title', 'sr-consult-details', 'sr-consult-results'].forEach(id => document
-                        .getElementById(id).value = '');
-                }
-                showToast('✅ تم حفظ التقرير', 'success');
-                addNotification(`📄 تقرير جديد: ${kind}`, 'info');
-            } catch (e) { showToast('❌ خطأ: ' + e.message, 'error'); }
-        };
-
-        window.delSR = async function(id) {
-            if (!canDeleteModule('reports')) { showToast('⛔ ليس لديك صلاحية الحذف في التقارير', 'error'); return; }
-            await deleteDoc(doc(db, 'specialReports', id));
-            showToast('🗑️ تم الحذف', 'info');
-        };
-
-        const SR_LABELS = { media: '📱 ميديا', meeting: '🤝 اجتماع', consult: '💡 استشارة' };
 
         function renderSpecialReports() {
             const list = document.getElementById('sr-list');
@@ -4504,6 +4761,7 @@
             document.getElementById('sr-sum').textContent = `${specialReports.length} تقرير`;
             if (!specialReports.length) { list.innerHTML =
                     '<div class="empty"><div class="empty-ico">📝</div><p>لا توجد تقارير خاصة بعد</p></div>'; return; }
+            const SR_LABELS = { media: '📱 ميديا', meeting: '🤝 اجتماع', consult: '💡 استشارة' };
             list.innerHTML = [...specialReports].sort((a, b) => (b.created || '').localeCompare(a.created || ''))
                 .map(r => {
                     const title = r.kind === 'media' ? (r.platform || 'ميديا') : (r.title || '—');
@@ -4512,7 +4770,8 @@
                         <div style="flex:1">
                             <div style="font-size:0.8rem;font-weight:700">${title} <span class="badge b-blue">${SR_LABELS[r.kind]||r.kind}</span></div>
                             <div style="font-size:0.67rem;color:var(--muted)">${r.clientName?`👤 ${r.clientName} • `:''}📅 ${r.created||''}</div>
-                            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+                            <div class="rep-actions">
+                                ${canEdit('specialReports')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEditSpecialReport('${r.id}','${r.kind}')">✏️ تعديل</button>`:''}
                                 <button class="rep-btn rep-pdf" onclick="reportAction('${r.kind}','${r.id}','pdf')">🖨️ PDF</button>
                                 <button class="rep-btn rep-wa" ${client&&client.phone?'':'disabled title="لا يوجد رقم هاتف"'} onclick="reportAction('${r.kind}','${r.id}','wa')">📲 واتساب</button>
                                 <button class="rep-btn rep-mail" ${client&&client.email?'':'disabled title="لا يوجد بريد"'} onclick="reportAction('${r.kind}','${r.id}','email')">📧 إيميل</button>
@@ -4522,6 +4781,48 @@
                     </div>`;
                 }).join('');
         }
+
+        // Special handler for special reports edit (populate based on kind)
+        window.startEditSpecialReport = function(id, kind) {
+            const r = specialReports.find(x => x.id == id);
+            if (!r) { showToast('❌ التقرير غير موجود', 'error'); return; }
+            editingState.collection = 'specialReports';
+            editingState.id = id;
+            editingState.module = 'reports';
+            // Show the right form
+            document.querySelectorAll('#monthly .rep-form').forEach(f => f.style.display = 'none');
+            document.getElementById('rf-' + kind).style.display = 'block';
+            // Populate
+            if (kind === 'media') {
+                document.getElementById('sr-media-cl').value = r.clientId || '';
+                document.getElementById('sr-media-platform').value = r.platform || '';
+                document.getElementById('sr-media-required').value = r.required || '';
+                document.getElementById('sr-media-goals').value = r.goals || '';
+                document.getElementById('sr-media-growth').value = r.growth || '';
+                document.getElementById('sr-media-likes').value = r.likes || '';
+                document.getElementById('sr-media-results').value = r.results || '';
+                document.getElementById('media-submit-btn').textContent = '💾 تحديث';
+                document.getElementById('media-cancel-btn').style.display = 'inline-block';
+                document.getElementById('media-form-title').textContent = 'تعديل تقرير ميديا';
+            } else if (kind === 'meeting') {
+                document.getElementById('sr-meeting-cl').value = r.clientId || '';
+                document.getElementById('sr-meeting-title').value = r.title || '';
+                document.getElementById('sr-meeting-points').value = r.points || '';
+                document.getElementById('sr-meeting-decisions').value = r.decisions || '';
+                document.getElementById('meeting-submit-btn').textContent = '💾 تحديث';
+                document.getElementById('meeting-cancel-btn').style.display = 'inline-block';
+                document.getElementById('meeting-form-title').textContent = 'تعديل تقرير اجتماع';
+            } else if (kind === 'consult') {
+                document.getElementById('sr-consult-cl').value = r.clientId || '';
+                document.getElementById('sr-consult-title').value = r.title || '';
+                document.getElementById('sr-consult-details').value = r.details || '';
+                document.getElementById('sr-consult-results').value = r.results || '';
+                document.getElementById('consult-submit-btn').textContent = '💾 تحديث';
+                document.getElementById('consult-cancel-btn').style.display = 'inline-block';
+                document.getElementById('consult-form-title').textContent = 'تعديل تقرير استشارة';
+            }
+            showToast(`✏️ جاري تعديل تقرير ${kind}`, 'info');
+        };
 
         function renderMonthly() {
             const list = document.getElementById('mr-list');
@@ -4542,6 +4843,7 @@
                     ${r.negatives?`<div style="font-size:0.75rem;color:var(--red);margin-top:3px">⚠️ ${r.negatives.substring(0,80)}...</div>`:''}
                     ${r.goals?`<div style="font-size:0.72rem;color:var(--teal);margin-top:4px;font-weight:600">🎯 ${r.goals.substring(0,60)}...</div>`:''}
                     <div class="rep-actions">
+                        ${canEdit('monthlyReports')?`<button class="rep-btn" style="color:var(--purple);border-color:#D0C8F0;" onclick="startEdit('monthlyReports','${r.id}','reports')">✏️ تعديل</button>`:''}
                         <button class="rep-btn rep-pdf" onclick="reportAction('mr','${r.id}','pdf')">🖨️ PDF</button>
                         <button class="rep-btn rep-wa" onclick="reportAction('mr','${r.id}','wa')">📲 واتساب</button>
                         <button class="rep-btn rep-mail" onclick="reportAction('mr','${r.id}','email')">📧 إيميل</button>
@@ -4550,7 +4852,7 @@
             ).join('');
         }
 
-        // ===== ACTUAL VISITS MONTHLY REPORT (with doctor frequency) =====
+        // ===== ACTUAL VISITS MONTHLY REPORT =====
         window.generateActualVisitsReport = function() {
             const month = document.getElementById('av-report-month').value;
             const clientId = document.getElementById('av-report-client').value;
@@ -4573,7 +4875,6 @@
             filtered.forEach(v => { topClient[v.clientName] = (topClient[v.clientName] || 0) + 1; });
             const bestClient = Object.entries(topClient).sort((a, b) => b[1] - a[1])[0];
 
-            // ===== DOCTOR FREQUENCY (NEW) =====
             const doctorFreq = {};
             filtered.forEach(v => {
                 const name = v.clientName || 'غير معروف';
@@ -4593,7 +4894,6 @@
                     </div>
                     <p><strong>إجمالي المدة:</strong> ${totalDur} دقيقة ${bestClient?`| 🏆 أفضل عميل: ${bestClient[0]} (${bestClient[1]} زيارة)`:''}</p>
 
-                    <!-- Doctor Frequency -->
                     <div style="margin:12px 0;background:#F0EEFF;padding:12px;border-radius:8px;">
                         <h5 style="color:var(--purple);margin-bottom:8px;">👨‍⚕️ تكرار أسماء الأطباء / العملاء</h5>
                         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;">
@@ -4640,7 +4940,6 @@
             final.forEach(v => { topClient[v.clientName] = (topClient[v.clientName] || 0) + 1; });
             const bestClient = Object.entries(topClient).sort((a, b) => b[1] - a[1])[0];
 
-            // Doctor frequency
             const doctorFreq = {};
             final.forEach(v => {
                 const name = v.clientName || 'غير معروف';
@@ -4697,7 +4996,6 @@
             const pending = final.filter(v => v.status === 'waiting' || v.status === 'planned').length;
             msg +=
                 `✅ منفذة: ${done} | ⏳ معلقة: ${pending} | ❌ ملغاة: ${final.filter(v=>v.status==='cancelled').length}\n\n`;
-            // Add doctor frequency
             const doctorFreq = {};
             final.forEach(v => {
                 const name = v.clientName || 'غير معروف';
@@ -4811,7 +5109,7 @@
                     <div style="background:#E6F9EC;padding:8px;border-radius:8px;text-align:center;"><strong style="color:var(--green)">${monthData.tasks.filter(t=>t.done).length}/${monthData.tasks.length}</strong><br><span style="font-size:0.6rem;">المهام المكتملة</span></div>
                 </div>
                 <div style="margin-top:12px;font-size:0.7rem;color:var(--muted);text-align:center;">
-                    📊 تم إنشاء التقرير تلقائياً بواسطة Global Marketer v4.8
+                    📊 تم إنشاء التقرير تلقائياً بواسطة Global Marketer v4.9
                 </div>
             </div>`;
 
@@ -4832,7 +5130,7 @@
         window.exportCompanyMonthlyWA = function() {
             if (!companyReportData) { showToast('⚠️ قم بتوليد التقرير أولاً', 'warning'); return; }
             const msg =
-                `🏢 تقرير الشركة الشامل\n${companyReportData.monthName}\n\n${companyReportData.html.replace(/<[^>]*>/g,' ').substring(0,2000)}...\n\nتم التصدير من Global Marketer`;
+                `🏢 تقرير الشركة الشامل\n${companyReportData.monthName}\n\n${companyReportData.html.replace(/<[^>]*>/g,' ').substring(0,2000)}...\n\nتم التصدير من Global Marketer v4.9`;
             const waLink = `https://wa.me/?text=${encodeURIComponent(msg)}`;
             window.open(waLink, '_blank');
         };
@@ -5039,10 +5337,8 @@
             showToast('✅ تم تصدير التقرير', 'success');
         }
 
-        // ===== ANALYTICS (Enhanced) =====
-        function renderAnalyticsExtra() {
-            // Already integrated into renderAnalytics
-        }
+        // ===== ANALYTICS =====
+        function renderAnalyticsExtra() {}
 
         function renderAnalytics() {
             const totalClients = clients.length;
@@ -5056,7 +5352,6 @@
                 <div class="sbox sb-gold"><div class="snum" style="color:var(--gold)">${totalContracts}</div><div class="slbl">عقود نشطة</div></div>
                 <div class="sbox sb-purple"><div class="snum" style="color:var(--purple)">${fmt(inc-exp)}</div><div class="slbl">صافي الربح</div></div>`;
 
-            // Trend grid
             const lastMonth = new Date();
             lastMonth.setMonth(lastMonth.getMonth() - 1);
             const lastMonthStr = lastMonth.toISOString().slice(0, 7);
@@ -5139,7 +5434,6 @@
                 `<div class="item"><div style="flex:1"><div style="font-size:0.8rem;font-weight:700">${tIcon(c.type)} ${c.name}</div></div><div style="font-weight:900;color:var(--teal)">${fmt(c.score)}</div></div>`
                 ).join('') : '<div class="empty" style="padding:10px"><p>لا بيانات</p></div>';
 
-            // Conversion trend
             const months = [];
             for (let i = 5; i >= 0; i--) {
                 const d = new Date();
@@ -5162,7 +5456,6 @@
                 `).join('')}
             `;
 
-            // Visit trend
             document.getElementById('ana-visit-trend').innerHTML = `
                 <div style="font-size:0.7rem;font-weight:700;color:var(--muted);margin-bottom:6px;">نشاط الزيارات الشهري</div>
                 ${months.map(m => {
@@ -5309,7 +5602,7 @@
             const exp = finances.filter(f => f.type === 'expense').reduce((a, f) => a + f.amount, 0);
             const govStats = {};
             visits.forEach(v => { if (v.governorate) govStats[v.governorate] = (govStats[v.governorate] || 0) + 1; });
-            return `أنت مساعد ذكي لنظام "Global Marketer" لإدارة التسويق الطبي.
+            return `أنت مساعد ذكي لنظام "Global Marketer" v4.9 لإدارة التسويق الطبي.
     البيانات الحالية (${todayStr}):
     - العملاء (${clients.length}): ${clients.map(c=>`${c.name}(${c.type},${c.specialization||''},${c.governorate||''})`).join('; ')||'لا يوجد'}
     - الزيارات الميدانية: ${visits.length} إجمالي، ${visits.filter(v=>v.status==='done').length} مكتملة، ${visits.filter(v=>v.status==='planned').length} مخططة
@@ -5625,6 +5918,7 @@
                 showToast('✅ تم إضافة المستخدم', 'success');
                 logOp('إضافة', 'أضاف مستخدم جديد: ' + name + ' (' + role + ')');
                 renderUsers();
+                renderAdminUsersTable();
             } catch (e) {
                 const msgs = { 'auth/email-already-in-use': 'الإيميل موجود بالفعل',
                     'auth/weak-password': 'كلمة المرور ضعيفة' };
@@ -5691,6 +5985,7 @@
                 }
                 showToast('✅ تم تحديث الصلاحية', 'success');
                 renderAdminUsersTable();
+                updateNavbarPermissions();
             } catch (e) { showToast('❌ فشل في حفظ الصلاحيات', 'error'); }
         };
 
@@ -6060,7 +6355,7 @@
                         <div style="font-size:10.5px;color:#6B8BAA;line-height:1.7;">
                             تاريخ الطباعة: ${printD}<br>
                             طُبع بواسطة: ${escapeHtml(printedByText)}<br>
-                            Global Marketer v4.8 — نظام إدارة وتسويق طبي
+                            Global Marketer v4.9 — نظام إدارة وتسويق طبي
                         </div>
                         ${signatureHtml}
                     </div>
@@ -6314,13 +6609,13 @@
             } else if (action === 'wa') {
                 const num = waNumber(client.phone);
                 const msg =
-                    `مرحباً ${client.name}،\nمرفق ${sendLabel} من Global Marketer.\nبرجاء الاطلاع.\n\nمع تحيات،\n${sigName} - ${sigTitle}`;
+                    `مرحباً ${client.name}،\nمرفق ${sendLabel} من Global Marketer v4.9.\nبرجاء الاطلاع.\n\nمع تحيات،\n${sigName} - ${sigTitle}`;
                 const url = `https://wa.me/${num}?text=${encodeURIComponent(msg)}`;
                 showToast('📎 تم تحميل PDF — أرفقه في محادثة واتساب اللي هتفتح', 'info');
                 if (popupRef) popupRef.location.href = url;
                 else window.open(url, '_blank');
             } else if (action === 'email') {
-                const subject = `${sendLabel} — ${client.name} — Global Marketer`;
+                const subject = `${sendLabel} — ${client.name} — Global Marketer v4.9`;
                 const body =
                     `مرحباً ${client.name}،\n\nمرفق ${sendLabel} من Global Marketer.\nبرجاء الاطلاع.\n\nمع تحيات،\n${sigName}\n${sigTitle}`;
                 showToast('📎 تم تحميل PDF — أرفقه في الإيميل اللي هيفتح', 'info');
@@ -6330,7 +6625,7 @@
         }
 
         // ===== INIT =====
-        console.log('🚀 Global Marketer v4.8 loaded');
+        console.log('🚀 Global Marketer v4.9 loaded');
         console.log('📡 Firebase config loaded');
         console.log('💾 Offline persistence enabled');
         console.log('📊 Enhanced analytics with trends');
@@ -6339,6 +6634,9 @@
         console.log('👨‍⚕️ Doctor frequency in actual visits report');
         console.log('🌙 Dark mode fixed with feedback');
         console.log('📧 Forgot password with improved feedback');
+        console.log('✏️ Edit functionality added for all modules (Admin only)');
+        console.log('🔍 Auto-suggest (datalist) for client names and visit titles');
+        console.log('🔐 Custom user permissions per module with navbar filtering');
 
         const savedNotes = localStorage.getItem('weeklyNotes');
         if (savedNotes) { const el = document.getElementById('weekly-notes'); if (el) el.value = savedNotes; }
@@ -6347,14 +6645,13 @@
         document.querySelector('.report-period-selector .pbtn')?.classList.add('on');
         document.getElementById('custom-period-inputs').style.display = 'none';
 
-        // Initial load of lookups
         setTimeout(() => {
             loadLookupsFromDB();
             fillSelects();
             fillDebtSelectTop();
+            populateDatalists();
         }, 500);
 
-        // Ensure theme button is correct
         loadTheme();
     </script>
 </body>
